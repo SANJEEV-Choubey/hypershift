@@ -9,7 +9,7 @@ import (
 	k8sutilspointer "k8s.io/utils/pointer"
 )
 
-func reconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.ServiceAccount, roksMetricsImage string) error {
+func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.ServiceAccount, roksMetricsImage string) error {
 	defaultMode := int32(420)
 	roksMetricsLabels := map[string]string{"app": "push-gateway"}
 	deployment.Spec = appsv1.DeploymentSpec{
@@ -63,7 +63,7 @@ func reconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.Se
 	return nil
 }
 
-func reconcileRocksMetricsPusherServiceMonitor(svcMonitor *monitoring.ServiceMonitor) error {
+func ReconcileRocksMetricsPusherServiceMonitor(svcMonitor *monitoring.ServiceMonitor) error {
 	svcMonitor.Spec.Selector = metav1.LabelSelector{
 		MatchLabels: map[string]string{
 			"app": "push-gateway",

@@ -10,7 +10,7 @@ import (
 	k8sutilspointer "k8s.io/utils/pointer"
 )
 
-func reconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.ServiceAccount, roksMetricsImage string) error {
+func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.ServiceAccount, roksMetricsImage string) error {
 	defaultMode := int32(420)
 	roksMetricsLabels := map[string]string{"app": "metrics"}
 	deployment.Spec = appsv1.DeploymentSpec{
@@ -61,7 +61,7 @@ func reconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.Se
 	return nil
 }
 
-func reconcileRoksMetricsClusterRole(role *rbacv1.ClusterRole) error {
+func ReconcileRoksMetricsClusterRole(role *rbacv1.ClusterRole) error {
 	role.Rules = []rbacv1.PolicyRule{
 		{
 			APIGroups: []string{"config.openshift.io"},
@@ -77,7 +77,7 @@ func reconcileRoksMetricsClusterRole(role *rbacv1.ClusterRole) error {
 	return nil
 }
 
-func reconcileRoksMetricsRoleBinding(binding *rbacv1.ClusterRoleBinding, role *rbacv1.ClusterRole, sa *corev1.ServiceAccount) error {
+func ReconcileRoksMetricsRoleBinding(binding *rbacv1.ClusterRoleBinding, role *rbacv1.ClusterRole, sa *corev1.ServiceAccount) error {
 	binding.RoleRef = rbacv1.RoleRef{
 		APIGroup: "rbac.authorization.k8s.io",
 		Kind:     "ClusterRole",
@@ -95,7 +95,7 @@ func reconcileRoksMetricsRoleBinding(binding *rbacv1.ClusterRoleBinding, role *r
 	return nil
 }
 
-func reconcileRocksMetricsServiceMonitor(svcMonitor *monitoring.ServiceMonitor) error {
+func ReconcileRocksMetricsServiceMonitor(svcMonitor *monitoring.ServiceMonitor) error {
 	svcMonitor.Spec.Selector = metav1.LabelSelector{
 		MatchLabels: map[string]string{
 			"app": "metrics",
@@ -136,7 +136,7 @@ func reconcileRocksMetricsServiceMonitor(svcMonitor *monitoring.ServiceMonitor) 
 	return nil
 }
 
-func reconcileRocksMetricsService(svc *corev1.Service) error {
+func ReconcileRocksMetricsService(svc *corev1.Service) error {
 	svc.Spec.Selector = map[string]string{
 		"app": "metrics",
 	}
@@ -152,5 +152,23 @@ func reconcileRocksMetricsService(svc *corev1.Service) error {
 	portSpec.TargetPort = intstr.FromInt(8443)
 	svc.Spec.Ports[0] = portSpec
 	svc.Spec.Type = corev1.ServiceTypeClusterIP
+	return nil
+}
+
+func ReconcilePrometheusRoleBinding(binding *rbacv1.RoleBinding) error {
+	binding.RoleRef = rbacv1.RoleRef{
+		APIGroup: "rbac.authorization.k8s.io",
+		Kind:     "Role",
+		Name:     "prometheus-k8s",
+	}
+
+	binding.Subjects = []rbacv1.Subject{
+		{
+			Kind:      "ServiceAccount",
+			Name:      "prometheus-k8s",
+			Namespace: "openshift-monitoring",
+		},
+	}
+
 	return nil
 }

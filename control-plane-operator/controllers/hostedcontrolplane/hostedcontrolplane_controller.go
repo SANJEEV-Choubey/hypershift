@@ -2306,8 +2306,17 @@ func (r *HostedControlPlaneReconciler) reconcileRoksMetrics(ctx context.Context,
 	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, roksMetricsRoleBinding, func() error {
 		return metrics.ReconcileRoksMetricsRoleBinding(roksMetricsRoleBinding, roksMetricRole, roksMetricserviceAccount)
 	}); err != nil {
-		return fmt.Errorf("failed to reconcile controlplane operator rolebinding: %w", err)
+		return fmt.Errorf("failed to reconcile roks metrics rolebinding: %w", err)
 	}
+
+	//reconcile prometheus rolbinding
+	prometheusRoleBinding := manifests.PrometheusK8sRoleBinding(controlPlaneNamespace.Name)
+	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, prometheusRoleBinding, func() error {
+		return metrics.ReconcilePrometheusRoleBinding(prometheusRoleBinding)
+	}); err != nil {
+		return fmt.Errorf("failed to reconcile prometheus-k8s rolebinding: %w", err)
+	}
+
 	//reconcile deployment
 	roksMetricsDeployment := manifests.RoksMetricsDeployment(hcp.Namespace)
 	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, roksMetricsDeployment, func() error {
