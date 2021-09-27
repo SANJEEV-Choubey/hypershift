@@ -43,7 +43,7 @@ require (
 	k8s.io/component-base v0.21.4
 	k8s.io/kube-aggregator v0.20.2
 	k8s.io/kube-scheduler v0.21.4
-	k8s.io/utils v0.0.0-20210802155522-efc7438f0176
+	k8s.io/utils v0.0.0-20210820185131-d34e5cb4466e
 	sigs.k8s.io/cluster-api v0.4.2
 	sigs.k8s.io/cluster-api-provider-aws v0.7.0
 	sigs.k8s.io/controller-runtime v0.9.6
