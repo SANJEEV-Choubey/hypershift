@@ -2344,14 +2344,14 @@ func (r *HostedControlPlaneReconciler) reconcileRoksMetricsPushGateway(ctx conte
 	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, roksMetricsDeployment, func() error {
 		return metrics_pusher.ReconcileMetr(roksMetricsDeployment)
 	}); err != nil {
-		return fmt.Errorf("failed to reconcile roks metrics deployment: %w", err)
+		return fmt.Errorf("failed to reconcile roks metrics pusher deployment: %w", err)
 	}
 	//reconcile Service Monitor
 	roksMetricPusherServiceMonitor := manifests.MetricPusherServiceMonitor(controlPlaneNamespace.Name)
 	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, roksMetricPusherServiceMonitor, func() error {
 		return metrics_pusher.ReconcileRocksMetricsPusherServiceMonitor(roksMetricPusherServiceMonitor)
 	}); err != nil {
-		return fmt.Errorf("failed to reconcile roks metrics service monitor: %w", err)
+		return fmt.Errorf("failed to reconcile roks metrics pusher service monitor: %w", err)
 	}
 	return nil
 }
