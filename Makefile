@@ -57,6 +57,17 @@ control-plane-operator:
 hosted-cluster-config-operator:
 	$(GO_BUILD_RECIPE) -o bin/hosted-cluster-config-operator ./hosted-cluster-config-operator
 
+# Build Roks-metrics binary
+.PHONY: roks-metrics
+roks-metrics:
+	$(GO_BUILD_RECIPE) -o /bin/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/roksmetrics ./roks-metrics 
+
+# Build Roks-metrics pusher binary
+.PHONY: roks-metrics-pusher
+roks-metrics-pusher:
+	$(GO_BUILD_RECIPE) -o /bin/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/metrics-pusher ./metrics-pusher
+
+
 .PHONY: hypershift
 hypershift:
 	$(GO_BUILD_RECIPE) -o bin/hypershift .
