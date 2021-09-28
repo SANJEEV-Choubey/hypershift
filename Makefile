@@ -29,7 +29,8 @@ endif
 
 all: build e2e
 
-build: ignition-server hypershift-operator control-plane-operator hosted-cluster-config-operator hypershift
+build: ignition-server hypershift-operator control-plane-operator hosted-cluster-config-operator 
+roks-metrics roks-metrics-pusher hypershift
 
 .PHONY: verify
 verify: staticcheck deps api fmt vet
@@ -65,7 +66,7 @@ roks-metrics:
 # Build Roks-metrics pusher binary
 .PHONY: roks-metrics-pusher
 roks-metrics-pusher:
-	$(GO_BUILD_RECIPE) -o /bin/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/metrics-pusher ./metrics-pusher
+	$(GO_BUILD_RECIPE) -o /bin/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/metric-pusher ./metric-pusher
 
 
 .PHONY: hypershift

@@ -80,7 +80,7 @@ func ReconcileRocksMetricsPusherServiceMonitor(svcMonitor *monitoring.ServiceMon
 	return nil
 }
 
-func reconcileRocksMetricsPusherService(svc *corev1.Service) error {
+func ReconcileRocksMetricsPusherService(svc *corev1.Service) error {
 	svc.Spec.Selector = map[string]string{
 		"app": "push-gateway",
 	}

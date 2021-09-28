@@ -19,8 +19,11 @@ require (
 	github.com/opencontainers/image-spec v1.0.1
 	github.com/openshift/api v0.0.0-20210713130143-be21c6cb1bea
 	github.com/openshift/client-go v0.0.0-20200929181438-91d71ef2122c
+	github.com/openshift/cluster-kube-apiserver-operator v0.0.0-alpha.0.0.20200901175228-fa89e5a96600
+	github.com/openshift/openshift-controller-manager v0.0.0-alpha.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.51.0
+	github.com/prometheus/client_golang v1.11.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.7.0
@@ -41,6 +44,7 @@ require (
 	k8s.io/apiserver v0.21.4
 	k8s.io/client-go v0.21.4
 	k8s.io/component-base v0.21.4
+	k8s.io/klog/v2 v2.10.0
 	k8s.io/kube-aggregator v0.20.2
 	k8s.io/kube-scheduler v0.21.4
 	k8s.io/utils v0.0.0-20210820185131-d34e5cb4466e

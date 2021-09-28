@@ -42,8 +42,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
-	"github.com/hypershift/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/metric-pusher/metrics_pusher"
-	"github.com/hypershift/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/roksmetrics/metrics"
 	hyperv1 "github.com/openshift/hypershift/api/v1alpha1"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedapicache"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/cloud/aws"
@@ -62,6 +60,10 @@ import (
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/ocm"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/pki"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/render"
+	metrics "github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/roksmetrics"
+
+	metrics_pusher "github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/metric-pusher"
+	//"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/roksmetrics/metrics"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/scheduler"
 	cpoutil "github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/util"
 	etcdv1 "github.com/openshift/hypershift/control-plane-operator/thirdparty/etcd/v1beta2"
@@ -2321,7 +2323,7 @@ func (r *HostedControlPlaneReconciler) reconcileRoksMetrics(ctx context.Context,
 	//reconcile deployment
 	roksMetricsDeployment := manifests.RoksMetricsDeployment(hcp.Namespace)
 	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, roksMetricsDeployment, func() error {
-		return metrics.ReconcileRoksMetricsDeployment(roksMetricsDeployment)
+		return metrics.ReconcileRoksMetricsDeployment(roksMetricsDeployment, roksMetricserviceAccount, render.NewClusterParams().ROKSMetricsImage)
 	}); err != nil {
 		return fmt.Errorf("failed to reconcile roks metrics deployment: %w", err)
 	}
@@ -2350,9 +2352,10 @@ func (r *HostedControlPlaneReconciler) reconcileRoksMetricsPushGateway(ctx conte
 		return fmt.Errorf("failed to reconcile roks metrics pusher service: %w", err)
 	}
 	//reconcile deployment
+	roksMetricserviceAccount := manifests.RoksMetricsServiceAccount(hcp.Namespace)
 	roksMetricsDeployment := manifests.MetricPusherDeployment(hcp.Namespace)
 	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, roksMetricsDeployment, func() error {
-		return metrics_pusher.ReconcileMetr(roksMetricsDeployment)
+		return metrics_pusher.ReconcileRoksMetricsDeployment(roksMetricsDeployment, roksMetricserviceAccount, render.NewClusterParams().ROKSMetricsImage)
 	}); err != nil {
 		return fmt.Errorf("failed to reconcile roks metrics pusher deployment: %w", err)
 	}
