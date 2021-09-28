@@ -60,9 +60,9 @@ import (
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/ocm"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/pki"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/render"
-	metrics "github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/roksmetrics"
+	metrics "github.com/openshift/hypershift/roks-metrics/roksmetrics"
 
-	metrics_pusher "github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/metric-pusher"
+	metrics_pusher "github.com/openshift/hypershift/roks-metrics/metric-pusher"
 	//"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/roksmetrics/metrics"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/scheduler"
 	cpoutil "github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/util"

@@ -18,7 +18,7 @@ COPY --from=builder /hypershift/bin/hypershift /usr/bin/hypershift
 COPY --from=builder /hypershift/bin/hypershift-operator /usr/bin/hypershift-operator
 COPY --from=builder /hypershift/bin/control-plane-operator /usr/bin/control-plane-operator
 COPY --from=builder /hypershift/bin/hosted-cluster-config-operator /usr/bin/hosted-cluster-config-operator
-COPY --from=builder /hypershift/bin/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/roksmetrics /usr/bin/roks-metrics
-COPY --from=builder /hypershift/bin/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/metric-pusher /usr/bin/metric-pusher
+COPY --from=builder /hypershift/bin/roks-metrics/roksmetrics /usr/bin/roks-metrics
+COPY --from=builder /hypershift/bin/roks-metrics/metric-pusher /usr/bin/metric-pusher
 
 ENTRYPOINT /usr/bin/hypershift
