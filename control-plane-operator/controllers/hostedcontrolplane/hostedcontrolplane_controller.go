@@ -48,6 +48,7 @@ import (
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/clusterpolicy"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/common"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/config"
+	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/configoperator"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/cvo"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/etcd"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/ingress"
@@ -660,6 +661,12 @@ func (r *HostedControlPlaneReconciler) update(ctx context.Context, hostedControl
 	// Reconcile the Roks Metrics push gate way
 	if err = r.reconcileRoksMetricsPushGateway(ctx, hostedControlPlane); err != nil {
 		return fmt.Errorf("failed to reconcile rocks metrics push gateway: %w", err)
+	}
+
+	// Reconcile hosted cluster config operator
+	r.Log.Info("Reconciling Hosted Cluster Config Operator")
+	if err = r.reconcileHostedClusterConfigOperator(ctx, hostedControlPlane, releaseImage); err != nil {
+		return fmt.Errorf("failed to reconcile hosted cluster config operator: %w", err)
 	}
 
 	// Install the control plane into the infrastructure
@@ -2061,6 +2068,44 @@ func reconcileImageContentSourceIgnitionConfig(ignitionConfig *corev1.ConfigMap,
 		ignitionConfig.Labels = map[string]string{}
 	}
 	ignitionConfig.Labels[manifests.CoreIgnitionFieldLabelKey] = manifests.CoreIgnitionFieldLabelValue
+	return nil
+}
+
+func (r *HostedControlPlaneReconciler) reconcileHostedClusterConfigOperator(ctx context.Context, hcp *hyperv1.HostedControlPlane, releaseInfo *releaseinfo.ReleaseImage) error {
+	versions, err := releaseInfo.ComponentVersions()
+	if err != nil {
+		return fmt.Errorf("failed to get component versions: %w", err)
+	}
+	p := configoperator.NewHostedClusterConfigOperatorParams(ctx, hcp, releaseInfo.ComponentImages(), releaseInfo.Version(), versions["kubernetes"])
+
+	sa := manifests.ConfigOperatorServiceAccount(hcp.Namespace)
+	if _, err = controllerutil.CreateOrUpdate(ctx, r.Client, sa, func() error {
+		return configoperator.ReconcileServiceAccount(sa, p.OwnerRef)
+	}); err != nil {
+		return fmt.Errorf("failed to reconcile config operator service account: %w", err)
+	}
+
+	role := manifests.ConfigOperatorRole(hcp.Namespace)
+	if _, err = controllerutil.CreateOrUpdate(ctx, r.Client, role, func() error {
+		return configoperator.ReconcileRole(role, p.OwnerRef)
+	}); err != nil {
+		return fmt.Errorf("failed to reconcile config operator role: %w", err)
+	}
+
+	rb := manifests.ConfigOperatorRoleBinding(hcp.Namespace)
+	if _, err = controllerutil.CreateOrUpdate(ctx, r.Client, rb, func() error {
+		return configoperator.ReconcileRoleBinding(rb, p.OwnerRef)
+	}); err != nil {
+		return fmt.Errorf("failed to reconcile config operator rolebinding: %w", err)
+	}
+
+	deployment := manifests.ConfigOperatorDeployment(hcp.Namespace)
+	if _, err = controllerutil.CreateOrUpdate(ctx, r.Client, deployment, func() error {
+		return configoperator.ReconcileDeployment(deployment, p.Image, p.OpenShiftVersion, p.KubernetesVersion, p.OwnerRef, &p.DeploymentConfig)
+	}); err != nil {
+		return fmt.Errorf("failed to reconcile config operator deployment: %w", err)
+	}
+
 	return nil
 }
 
