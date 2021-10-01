@@ -63,7 +63,7 @@ func (s *MetricsServer) Run() error {
 	buildInformers.Start(done)
 
 	smux := http.NewServeMux()
-	smux.Handle("/metrics", legacyregistry.HandlerWithReset())
+	smux.Handle("/usermetrics", legacyregistry.HandlerWithReset())
 	server := &http.Server{
 		Addr:    s.ListenAddress,
 		Handler: smux,
