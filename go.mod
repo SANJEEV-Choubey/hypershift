@@ -8,7 +8,6 @@ require (
 	github.com/bombsimon/logrusr v1.0.0
 	github.com/coreos/ignition/v2 v2.10.1
 	github.com/docker/distribution v2.7.1+incompatible
-	github.com/docker/libtrust v0.0.0-20160708172513-aabc10ec26b7 // indirect
 	github.com/go-logr/logr v0.4.0
 	github.com/google/go-cmp v0.5.6
 	github.com/google/uuid v1.2.0
@@ -44,6 +43,7 @@ require (
 	k8s.io/apiserver v0.22.2
 	k8s.io/client-go v0.22.2
 	k8s.io/component-base v0.22.2
+	k8s.io/klog/v2 v2.10.0
 	k8s.io/kube-aggregator v0.20.2
 	k8s.io/kube-scheduler v0.21.4
 	k8s.io/utils v0.0.0-20210819203725-bdf08cb9a70a
@@ -55,7 +55,7 @@ require (
 )
 
 replace (
-	k8s.io/utils => k8s.io/utils v0.0.0-20210111153108-fddb29f9d009
+	//k8s.io/utils => k8s.io/utils v0.0.0-20210111153108-fddb29f9d009
 	sigs.k8s.io/cluster-api => sigs.k8s.io/cluster-api v0.4.2
 	sigs.k8s.io/controller-tools => sigs.k8s.io/controller-tools v0.5.0
 )

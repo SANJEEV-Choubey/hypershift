@@ -60,12 +60,12 @@ hosted-cluster-config-operator:
 # Build Roks-metrics binary
 .PHONY: roks-metrics
 roks-metrics:
-	$(GO_BUILD_RECIPE) -o /bin/roks-metrics/roksmetrics ./roks-metrics 
+	$(GO_BUILD_RECIPE) -o bin/roks-metrics/roksmetrics ./roks-metrics/roksmetrics 
 
 # Build Roks-metrics pusher binary
 .PHONY: roks-metrics-pusher
 roks-metrics-pusher:
-	$(GO_BUILD_RECIPE) -o /bin/roks-metrics/metric-pusher ./metric-pusher
+	$(GO_BUILD_RECIPE) -o bin/roks-metrics/metric-pusher ./roks-metrics/metric-pusher
 
 
 .PHONY: hypershift
