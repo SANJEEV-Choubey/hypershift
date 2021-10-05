@@ -22,5 +22,6 @@ COPY --from=builder /hypershift/bin/roks-metrics/roksmetrics /usr/bin/roks-metri
 COPY --from=builder /hypershift/bin/roks-metrics/metric-pusher /usr/bin/metric-pusher
 COPY --from=builder /hypershift/bin/konnectivity-socks5-proxy /usr/bin/konnectivity-socks5-proxy
 COPY --from=builder /pushgateway /usr/bin/pushgateway
+COPY --from=builder /hypershift/bin/availability-prober /usr/bin/availability-prober
 
 ENTRYPOINT /usr/bin/hypershift
