@@ -1201,12 +1201,12 @@ k8s.io/utils/net
 k8s.io/utils/path
 k8s.io/utils/pointer
 k8s.io/utils/trace
-# sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.0.22
-sigs.k8s.io/apiserver-network-proxy/konnectivity-client/pkg/client
-sigs.k8s.io/apiserver-network-proxy/konnectivity-client/proto/client
 # sigs.k8s.io/apiserver-network-proxy v0.0.24
 ## explicit
 sigs.k8s.io/apiserver-network-proxy/pkg/util
+# sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.0.22 => sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.0.24
+sigs.k8s.io/apiserver-network-proxy/konnectivity-client/pkg/client
+sigs.k8s.io/apiserver-network-proxy/konnectivity-client/proto/client
 # sigs.k8s.io/cluster-api v0.4.2 => sigs.k8s.io/cluster-api v0.4.2
 ## explicit
 sigs.k8s.io/cluster-api/api/v1alpha4
@@ -1295,6 +1295,5 @@ sigs.k8s.io/structured-merge-diff/v4/value
 ## explicit
 sigs.k8s.io/yaml
 # sigs.k8s.io/apiserver-network-proxy/konnectivity-client => sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.0.24
-# k8s.io/utils => k8s.io/utils v0.0.0-20210111153108-fddb29f9d009
 # sigs.k8s.io/cluster-api => sigs.k8s.io/cluster-api v0.4.2
 # sigs.k8s.io/controller-tools => sigs.k8s.io/controller-tools v0.5.0
