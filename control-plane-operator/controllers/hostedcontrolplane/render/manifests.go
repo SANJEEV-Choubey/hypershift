@@ -17,8 +17,9 @@ func RenderClusterManifests(params *ClusterParams, image *releaseinfo.ReleaseIma
 	if err != nil {
 		return nil, err
 	}
+	includeMetrics := len(params.ROKSMetricsImage) > 0
 	ctx := newClusterManifestContext(image.ComponentImages(), componentVersions, params, pullSecret, secrets, configMaps)
-	ctx.setupManifests()
+	ctx.setupManifests(includeMetrics)
 	return ctx.renderManifests()
 }
 
@@ -56,12 +57,15 @@ func newClusterManifestContext(images, versions map[string]string, params *Clust
 	return ctx
 }
 
-func (c *clusterManifestContext) setupManifests() {
+func (c *clusterManifestContext) setupManifests(includeMetrics bool) {
 	c.clusterBootstrap()
 	c.registry()
 	c.userManifestsBootstrapper()
 	c.machineConfigServer()
 	c.ignitionConfigs()
+	if includeMetrics {
+		c.roksMetrics()
+	}
 }
 
 func (c *clusterManifestContext) registry() {
@@ -162,4 +166,18 @@ func (c *clusterManifestContext) addUserManifestFiles(name ...string) {
 func userConfigMapName(file string) string {
 	parts := strings.Split(file, ".")
 	return "user-manifest-" + strings.ReplaceAll(parts[0], "_", "-")
+}
+
+func (c *clusterManifestContext) roksMetrics() {
+	c.addUserManifestFiles(
+		"roks-metrics/roks-metrics-00-namespace.yaml",
+		"roks-metrics/roks-metrics-deployment.yaml",
+		"roks-metrics/roks-metrics-rbac.yaml",
+		"roks-metrics/roks-metrics-service.yaml",
+		"roks-metrics/roks-metrics-serviceaccount.yaml",
+		"roks-metrics/roks-metrics-servicemonitor.yaml",
+		"roks-metrics/roks-metrics-push-gateway-deployment.yaml",
+		"roks-metrics/roks-metrics-push-gateway-service.yaml",
+		"roks-metrics/roks-metrics-push-gateway-servicemonitor.yaml",
+	)
 }
