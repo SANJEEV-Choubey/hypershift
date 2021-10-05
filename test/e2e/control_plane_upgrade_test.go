@@ -41,6 +41,7 @@ func TestUpgradeControlPlane(t *testing.T) {
 
 	// Ensure we clean up after the test
 	defer func() {
+		e2eutil.SaveMachineConsoleLogs(t, context.Background(), hostedCluster, globalOpts.AWSCredentialsFile, globalOpts.ArtifactDir)
 		// TODO: Figure out why this is slow
 		//e2eutil.DumpGuestCluster(context.Background(), client, hostedCluster, globalOpts.ArtifactDir)
 		e2eutil.DumpAndDestroyHostedCluster(t, context.Background(), hostedCluster, globalOpts.AWSCredentialsFile, globalOpts.Region, globalOpts.BaseDomain, globalOpts.ArtifactDir)
@@ -49,14 +50,14 @@ func TestUpgradeControlPlane(t *testing.T) {
 
 	// Create the cluster
 	createClusterOpts := cmdcluster.Options{
-		Namespace:          hostedCluster.Namespace,
-		Name:               hostedCluster.Name,
-		InfraID:            hostedCluster.Name,
-		ReleaseImage:       globalOpts.PreviousReleaseImage,
-		PullSecretFile:     globalOpts.PullSecretFile,
-		AWSCredentialsFile: globalOpts.AWSCredentialsFile,
-		Region:             globalOpts.Region,
-		// TODO: generate a key on the fly
+		Namespace:                 hostedCluster.Namespace,
+		Name:                      hostedCluster.Name,
+		InfraID:                   hostedCluster.Name,
+		ReleaseImage:              globalOpts.PreviousReleaseImage,
+		PullSecretFile:            globalOpts.PullSecretFile,
+		AWSCredentialsFile:        globalOpts.AWSCredentialsFile,
+		Region:                    globalOpts.Region,
+		GenerateSSH:               true,
 		SSHKeyFile:                "",
 		NodePoolReplicas:          2,
 		InstanceType:              "m4.large",

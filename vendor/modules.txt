@@ -8,6 +8,9 @@ github.com/NYTimes/gziphandler
 github.com/PuerkitoBio/purell
 # github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578
 github.com/PuerkitoBio/urlesc
+# github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5
+## explicit
+github.com/armon/go-socks5
 # github.com/aws/aws-sdk-go v1.40.22
 ## explicit
 github.com/aws/aws-sdk-go/aws
@@ -413,9 +416,16 @@ go.uber.org/zap/zapgrpc
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blake2b
 golang.org/x/crypto/blowfish
+golang.org/x/crypto/chacha20
+golang.org/x/crypto/curve25519
+golang.org/x/crypto/curve25519/internal/field
 golang.org/x/crypto/ed25519
 golang.org/x/crypto/ed25519/internal/edwards25519
+golang.org/x/crypto/internal/subtle
 golang.org/x/crypto/pbkdf2
+golang.org/x/crypto/poly1305
+golang.org/x/crypto/ssh
+golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 # golang.org/x/mod v0.4.2
 golang.org/x/mod/semver
 # golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d
@@ -1194,6 +1204,9 @@ k8s.io/utils/trace
 # sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.0.22
 sigs.k8s.io/apiserver-network-proxy/konnectivity-client/pkg/client
 sigs.k8s.io/apiserver-network-proxy/konnectivity-client/proto/client
+# sigs.k8s.io/apiserver-network-proxy v0.0.24
+## explicit
+sigs.k8s.io/apiserver-network-proxy/pkg/util
 # sigs.k8s.io/cluster-api v0.4.2 => sigs.k8s.io/cluster-api v0.4.2
 ## explicit
 sigs.k8s.io/cluster-api/api/v1alpha4
@@ -1281,5 +1294,7 @@ sigs.k8s.io/structured-merge-diff/v4/value
 # sigs.k8s.io/yaml v1.2.0
 ## explicit
 sigs.k8s.io/yaml
+# sigs.k8s.io/apiserver-network-proxy/konnectivity-client => sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.0.24
+# k8s.io/utils => k8s.io/utils v0.0.0-20210111153108-fddb29f9d009
 # sigs.k8s.io/cluster-api => sigs.k8s.io/cluster-api v0.4.2
 # sigs.k8s.io/controller-tools => sigs.k8s.io/controller-tools v0.5.0
