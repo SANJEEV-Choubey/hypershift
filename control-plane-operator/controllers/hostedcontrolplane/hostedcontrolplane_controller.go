@@ -64,11 +64,10 @@ import (
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/render"
 	metrics "github.com/openshift/hypershift/roks-metrics/roksmetrics"
 
-	metrics_pusher "github.com/openshift/hypershift/roks-metrics/metric-pusher"
-	//"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/roks-metrics/roksmetrics/metrics"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/scheduler"
 	cpoutil "github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/util"
 	etcdv1 "github.com/openshift/hypershift/control-plane-operator/thirdparty/etcd/v1beta2"
+	metrics_pusher "github.com/openshift/hypershift/roks-metrics/metric-pusher"
 	"github.com/openshift/hypershift/support/releaseinfo"
 	"sigs.k8s.io/cluster-api/util"
 )

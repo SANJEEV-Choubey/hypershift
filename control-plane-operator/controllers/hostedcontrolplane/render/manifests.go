@@ -60,12 +60,13 @@ func newClusterManifestContext(images, versions map[string]string, params *Clust
 func (c *clusterManifestContext) setupManifests(includeMetrics bool) {
 	c.clusterBootstrap()
 	c.registry()
-	c.userManifestsBootstrapper()
-	c.machineConfigServer()
-	c.ignitionConfigs()
 	if includeMetrics {
 		c.roksMetrics()
 	}
+	c.userManifestsBootstrapper()
+	c.machineConfigServer()
+	c.ignitionConfigs()
+
 }
 
 func (c *clusterManifestContext) registry() {

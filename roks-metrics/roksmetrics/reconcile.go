@@ -19,6 +19,7 @@ func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.Se
 		Selector: &metav1.LabelSelector{
 			MatchLabels: roksMetricsLabels,
 		},
+		//Strategy: appsv1.RollingUpdateDaemonSet,
 		Template: corev1.PodTemplateSpec{
 			ObjectMeta: metav1.ObjectMeta{
 				Labels: roksMetricsLabels,
