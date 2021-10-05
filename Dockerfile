@@ -21,5 +21,6 @@ COPY --from=builder /hypershift/bin/hosted-cluster-config-operator /usr/bin/host
 COPY --from=builder /hypershift/bin/roks-metrics/roksmetrics /usr/bin/roks-metrics
 COPY --from=builder /hypershift/bin/roks-metrics/metric-pusher /usr/bin/metric-pusher
 COPY --from=builder /hypershift/bin/konnectivity-socks5-proxy /usr/bin/konnectivity-socks5-proxy
+COPY --from=builder /pushgateway /usr/bin/pushgateway
 
 ENTRYPOINT /usr/bin/hypershift

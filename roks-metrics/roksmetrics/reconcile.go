@@ -1,6 +1,7 @@
 package metrics
 
 import (
+	"github.com/openshift/hypershift/hypershift-operator/controllers/util"
 	monitoring "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -31,7 +32,7 @@ func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.Se
 							Secret: &corev1.SecretVolumeSource{
 								DefaultMode: &defaultMode,
 								SecretName:  "serving-cert",
-								//Optional:    &true,
+								Optional:    util.True(),
 							},
 						},
 					},
@@ -41,6 +42,7 @@ func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.Se
 						Name:            "metrics",
 						Image:           roksMetricsImage,
 						ImagePullPolicy: corev1.PullAlways,
+						Command:         []string{"/usr/bin/roks-metrics"},
 						Args: []string{
 							"--alsologtostderr",
 							"--v=3",
