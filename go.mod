@@ -24,7 +24,7 @@ require (
 	github.com/openshift/cluster-kube-apiserver-operator v0.0.0-alpha.0.0.20200901175228-fa89e5a96600
 	github.com/openshift/openshift-controller-manager v0.0.0-alpha.0
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.51.0
+	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.51.1
 	github.com/prometheus/client_golang v1.11.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.2.1
