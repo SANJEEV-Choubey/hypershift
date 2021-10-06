@@ -1,9 +1,12 @@
 package metrics_pusher
 
 import (
+	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/render"
+	"github.com/openshift/hypershift/hypershift-operator/controllers/util"
 	monitoring "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	k8sutilspointer "k8s.io/utils/pointer"
@@ -12,6 +15,20 @@ import (
 func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.ServiceAccount, roksMetricsImage string) error {
 	defaultMode := int32(420)
 	roksMetricsLabels := map[string]string{"app": "push-gateway"}
+	maxSurge := intstr.FromInt(2)
+	maxUnavailable := intstr.FromInt(1)
+	deployment.Spec.Strategy.RollingUpdate = &appsv1.RollingUpdateDeployment{
+		MaxSurge:       &maxSurge,
+		MaxUnavailable: &maxUnavailable,
+	}
+	if len(render.NewClusterParams().RestartDate) > 0 {
+		deployment.Spec.Template.ObjectMeta.Annotations = map[string]string{
+			"openshift.io/restartedAt": render.NewClusterParams().RestartDate,
+		}
+	}
+	// if len(render.NewClusterParams().ROKSMetricsSecurityContextWorker) > 0 {
+	// 	deployment.Spec.Template.Spec.Containers[0].SecurityContext.RunAsNonRoot = corev1.SecurityContext
+	// }
 	deployment.Spec = appsv1.DeploymentSpec{
 		Replicas: k8sutilspointer.Int32Ptr(1),
 		Selector: &metav1.LabelSelector{
@@ -30,7 +47,7 @@ func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.Se
 							Secret: &corev1.SecretVolumeSource{
 								DefaultMode: &defaultMode,
 								SecretName:  "serving-cert",
-								//Optional:    &true,
+								Optional:    util.True(),
 							},
 						},
 					},
@@ -45,7 +62,8 @@ func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.Se
 				},
 				Containers: []corev1.Container{
 					{
-						Name:            "push-gateway",
+						Name: "push-gateway",
+
 						Image:           roksMetricsImage,
 						ImagePullPolicy: corev1.PullAlways,
 						Command:         []string{"pushgateway"},
@@ -53,6 +71,12 @@ func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.Se
 							{
 								Name:          "http",
 								ContainerPort: 9091,
+							},
+						},
+						Resources: corev1.ResourceRequirements{
+							Requests: corev1.ResourceList{
+								corev1.ResourceCPU:    resource.MustParse("10m"),
+								corev1.ResourceMemory: resource.MustParse("50Mi"),
 							},
 						},
 					},

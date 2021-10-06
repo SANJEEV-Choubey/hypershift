@@ -1,11 +1,13 @@
 package metrics
 
 import (
+	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/render"
 	"github.com/openshift/hypershift/hypershift-operator/controllers/util"
 	monitoring "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	k8sutilspointer "k8s.io/utils/pointer"
@@ -14,18 +16,29 @@ import (
 func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.ServiceAccount, roksMetricsImage string) error {
 	defaultMode := int32(420)
 	roksMetricsLabels := map[string]string{"app": "metrics"}
+	maxSurge := intstr.FromInt(2)
+	maxUnavailable := intstr.FromInt(1)
+	deployment.Spec.Strategy.RollingUpdate = &appsv1.RollingUpdateDeployment{
+		MaxSurge:       &maxSurge,
+		MaxUnavailable: &maxUnavailable,
+	}
+	if len(render.NewClusterParams().RestartDate) > 0 {
+		deployment.Spec.Template.ObjectMeta.Annotations = map[string]string{
+			"openshift.io/restartedAt": render.NewClusterParams().RestartDate,
+		}
+	}
 	deployment.Spec = appsv1.DeploymentSpec{
 		Replicas: k8sutilspointer.Int32Ptr(1),
 		Selector: &metav1.LabelSelector{
 			MatchLabels: roksMetricsLabels,
 		},
-		//Strategy: appsv1.RollingUpdateDaemonSet,
 		Template: corev1.PodTemplateSpec{
 			ObjectMeta: metav1.ObjectMeta{
 				Labels: roksMetricsLabels,
 			},
 			Spec: corev1.PodSpec{
 				ServiceAccountName: sa.Name,
+				PriorityClassName:  "system-cluster-critical",
 				Volumes: []corev1.Volume{
 					{
 						Name: "serving-cert",
@@ -38,12 +51,26 @@ func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.Se
 						},
 					},
 				},
+				Tolerations: []corev1.Toleration{
+					{
+						Key:      "multi-az-worker",
+						Operator: "Equal",
+						Value:    "true",
+						Effect:   corev1.TaintEffectNoSchedule,
+					},
+				},
 				Containers: []corev1.Container{
 					{
 						Name:            "metrics",
 						Image:           roksMetricsImage,
 						ImagePullPolicy: corev1.PullAlways,
-						Command:         []string{"/usr/bin/roks-metrics"},
+						Ports: []corev1.ContainerPort{
+							{
+								Name:          "https",
+								ContainerPort: 8443,
+							},
+						},
+						Command: []string{"/usr/bin/roks-metrics"},
 						Args: []string{
 							"--alsologtostderr",
 							"--v=3",
@@ -54,6 +81,12 @@ func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.Se
 								Name:      "serving-cert",
 								ReadOnly:  true,
 								MountPath: "/var/run/secrets/serving-cert",
+							},
+						},
+						Resources: corev1.ResourceRequirements{
+							Requests: corev1.ResourceList{
+								corev1.ResourceCPU:    resource.MustParse("10m"),
+								corev1.ResourceMemory: resource.MustParse("50Mi"),
 							},
 						},
 					},
