@@ -2592,6 +2592,8 @@ func (r *HostedControlPlaneReconciler) reconcileRoksMetrics(ctx context.Context,
 	}); err != nil {
 		return fmt.Errorf("failed to reconcile roks metrics deployment: %w", err)
 	}
+	//reconcile roks metrics demonset
+	//reconcileRoksMetricDaemonSet()
 	//reconcile Service Monitor
 	roksMetricServiceMonitor := manifests.RoksMetricsServiceMonitor(controlPlaneNamespace.Name)
 	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, roksMetricServiceMonitor, func() error {

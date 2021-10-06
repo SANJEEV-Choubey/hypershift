@@ -13,9 +13,13 @@ import (
 	k8sutilspointer "k8s.io/utils/pointer"
 )
 
+var (
+	roksMetricsLabels      = map[string]string{"app": "metrics"}
+	roksMetricPusherLabels = map[string]string{"app": "push-gateway"}
+)
+
 func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.ServiceAccount, roksMetricsImage string) error {
 	defaultMode := int32(420)
-	roksMetricsLabels := map[string]string{"app": "metrics"}
 	maxSurge := intstr.FromInt(2)
 	maxUnavailable := intstr.FromInt(1)
 	deployment.Spec.Strategy.RollingUpdate = &appsv1.RollingUpdateDeployment{
@@ -211,7 +215,6 @@ func ReconcilePrometheusRoleBinding(binding *rbacv1.RoleBinding) error {
 
 func ReconcileRoksMetricsPusherDeployment(deployment *appsv1.Deployment, sa *corev1.ServiceAccount, roksMetricsImage string) error {
 	defaultMode := int32(420)
-	roksMetricsLabels := map[string]string{"app": "push-gateway"}
 	maxSurge := intstr.FromInt(2)
 	maxUnavailable := intstr.FromInt(1)
 	deployment.Spec.Strategy.RollingUpdate = &appsv1.RollingUpdateDeployment{
@@ -229,11 +232,11 @@ func ReconcileRoksMetricsPusherDeployment(deployment *appsv1.Deployment, sa *cor
 	deployment.Spec = appsv1.DeploymentSpec{
 		Replicas: k8sutilspointer.Int32Ptr(1),
 		Selector: &metav1.LabelSelector{
-			MatchLabels: roksMetricsLabels,
+			MatchLabels: roksMetricPusherLabels,
 		},
 		Template: corev1.PodTemplateSpec{
 			ObjectMeta: metav1.ObjectMeta{
-				Labels: roksMetricsLabels,
+				Labels: roksMetricPusherLabels,
 			},
 			Spec: corev1.PodSpec{
 				ServiceAccountName: sa.Name,
@@ -286,9 +289,7 @@ func ReconcileRoksMetricsPusherDeployment(deployment *appsv1.Deployment, sa *cor
 
 func ReconcileRocksMetricsPusherServiceMonitor(svcMonitor *monitoring.ServiceMonitor) error {
 	svcMonitor.Spec.Selector = metav1.LabelSelector{
-		MatchLabels: map[string]string{
-			"app": "push-gateway",
-		},
+		MatchLabels: roksMetricPusherLabels,
 	}
 
 	svcMonitor.Spec.Endpoints = []monitoring.Endpoint{{
@@ -302,9 +303,7 @@ func ReconcileRocksMetricsPusherServiceMonitor(svcMonitor *monitoring.ServiceMon
 }
 
 func ReconcileRocksMetricsPusherService(svc *corev1.Service) error {
-	svc.Spec.Selector = map[string]string{
-		"app": "push-gateway",
-	}
+	svc.Spec.Selector = roksMetricPusherLabels
 	var portSpec corev1.ServicePort
 	if len(svc.Spec.Ports) > 0 {
 		portSpec = svc.Spec.Ports[0]
@@ -319,3 +318,79 @@ func ReconcileRocksMetricsPusherService(svc *corev1.Service) error {
 	svc.Spec.Type = corev1.ServiceTypeClusterIP
 	return nil
 }
+
+// func reconcileRoksMetricDaemonSet(daemonset *appsv1.DaemonSet, deploymentConfig config.DeploymentConfig, image string, host string, port int32) error {
+// 	daemonset.Spec = appsv1.DaemonSetSpec{
+// 		Selector: &metav1.LabelSelector{
+// 			MatchLabels: roksMetricsLabels,
+// 		},
+// 		Template: corev1.PodTemplateSpec{
+// 			ObjectMeta: metav1.ObjectMeta{
+// 				Labels: roksMetricsLabels,
+// 			},
+// 			Spec: corev1.PodSpec{
+// 				AutomountServiceAccountToken: pointer.BoolPtr(false),
+// 				SecurityContext: &corev1.PodSecurityContext{
+// 					RunAsUser: pointer.Int64Ptr(1000),
+// 				},
+// 				HostNetwork:        true,
+// 				ServiceAccountName: sa.Name,
+// 				PriorityClassName:  "system-cluster-critical",
+// 				Volumes: []corev1.Volume{
+// 					{
+// 						Name: "serving-cert",
+// 						VolumeSource: corev1.VolumeSource{
+// 							Secret: &corev1.SecretVolumeSource{
+// 								DefaultMode: &defaultMode,
+// 								SecretName:  "serving-cert",
+// 								Optional:    util.True(),
+// 							},
+// 						},
+// 					},
+// 				},
+// 				Tolerations: []corev1.Toleration{
+// 					{
+// 						Key:      "multi-az-worker",
+// 						Operator: "Equal",
+// 						Value:    "true",
+// 						Effect:   corev1.TaintEffectNoSchedule,
+// 					},
+// 				},
+// 				Containers: []corev1.Container{
+// 					{
+// 						Name:            "metrics",
+// 						Image:           roksMetricsImage,
+// 						ImagePullPolicy: corev1.PullAlways,
+// 						Ports: []corev1.ContainerPort{
+// 							{
+// 								Name:          "https",
+// 								ContainerPort: 8443,
+// 							},
+// 						},
+// 						Command: []string{"/usr/bin/roks-metrics"},
+// 						Args: []string{
+// 							"--alsologtostderr",
+// 							"--v=3",
+// 							"--listen=:8443",
+// 						},
+// 						VolumeMounts: []corev1.VolumeMount{
+// 							{
+// 								Name:      "serving-cert",
+// 								ReadOnly:  true,
+// 								MountPath: "/var/run/secrets/serving-cert",
+// 							},
+// 						},
+// 						Resources: corev1.ResourceRequirements{
+// 							Requests: corev1.ResourceList{
+// 								corev1.ResourceCPU:    resource.MustParse("10m"),
+// 								corev1.ResourceMemory: resource.MustParse("50Mi"),
+// 							},
+// 						},
+// 					},
+// 				},
+// 			},
+// 		},
+// 	}
+// 	deploymentConfig.ApplyToDaemonSet(daemonset)
+// 	return nil
+// }
