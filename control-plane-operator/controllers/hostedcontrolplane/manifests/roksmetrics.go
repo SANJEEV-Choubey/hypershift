@@ -88,3 +88,39 @@ func PrometheusK8sRoleBinding(namespace string) *rbacv1.RoleBinding {
 		},
 	}
 }
+
+func MetricPusherRoute(namespace string) *routev1.Route {
+	return &routev1.Route{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: namespace,
+			Name:      "push-gateway",
+		},
+	}
+}
+
+func MetricPusherService(namespace string) *corev1.Service {
+	return &corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: namespace,
+			Name:      "push-gateway",
+		},
+	}
+}
+
+func MetricPusherServiceMonitor(namespace string) *monitoring.ServiceMonitor {
+	return &monitoring.ServiceMonitor{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: namespace,
+			Name:      "push-gateway",
+		},
+	}
+}
+
+func MetricPusherDeployment(namespace string) *appsv1.Deployment {
+	return &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: namespace,
+			Name:      "push-gateway",
+		},
+	}
+}

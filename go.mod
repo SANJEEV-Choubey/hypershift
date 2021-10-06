@@ -11,6 +11,7 @@ require (
 	github.com/bombsimon/logrusr v1.0.0
 	github.com/coreos/ignition/v2 v2.10.1
 	github.com/docker/distribution v2.7.1+incompatible
+	github.com/docker/libtrust v0.0.0-20160708172513-aabc10ec26b7 // indirect
 	github.com/go-logr/logr v0.4.0
 	github.com/google/go-cmp v0.5.6
 	github.com/google/uuid v1.2.0
@@ -21,8 +22,6 @@ require (
 	github.com/opencontainers/image-spec v1.0.1
 	github.com/openshift/api v0.0.0-20210901140736-d8ed1449662d
 	github.com/openshift/client-go v0.0.0-20200929181438-91d71ef2122c
-	github.com/openshift/cluster-kube-apiserver-operator v0.0.0-alpha.0.0.20200901175228-fa89e5a96600
-	github.com/openshift/openshift-controller-manager v0.0.0-alpha.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.51.1
 	github.com/prometheus/client_golang v1.11.0
@@ -46,7 +45,6 @@ require (
 	k8s.io/apiserver v0.22.2
 	k8s.io/client-go v0.22.2
 	k8s.io/component-base v0.22.2
-	k8s.io/klog/v2 v2.10.0
 	k8s.io/kube-aggregator v0.20.2
 	k8s.io/kube-scheduler v0.21.4
 	k8s.io/utils v0.0.0-20210819203725-bdf08cb9a70a
