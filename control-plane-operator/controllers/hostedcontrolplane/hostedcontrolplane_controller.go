@@ -76,7 +76,7 @@ const (
 	DefaultAdminKubeconfigName = "admin-kubeconfig"
 	DefaultAdminKubeconfigKey  = "kubeconfig"
 	oauthBrandingManifest      = "v4-0-config-system-branding.yaml"
-	imageRoksMetricsImage      = "registry.ci.openshift.org/ibm-roks-toolkit/roks-metrics:latest"
+	imageRoksMetricsImage      = "registry.ci.openshift.org/hypershift-toolkit/ibm-roks-4.6:roks-metrics"
 )
 
 var (
