@@ -76,7 +76,7 @@ const (
 	DefaultAdminKubeconfigName = "admin-kubeconfig"
 	DefaultAdminKubeconfigKey  = "kubeconfig"
 	oauthBrandingManifest      = "v4-0-config-system-branding.yaml"
-	imageRoksMetricsImage      = "registry.ci.openshift.org/hypershift-toolkit/ibm-roks-4.6:roks-metrics"
+	imageRoksMetricsImage      = "registry.ng.bluemix.net/armada-master/ocp-roks-metrics-server:v4.7.0-20210917"
 )
 
 var (
@@ -654,6 +654,7 @@ func (r *HostedControlPlaneReconciler) update(ctx context.Context, hostedControl
 		}
 	}
 	// Reconcile the Roks Metrics
+	r.Log.Info("Reconciling Roks Metrics")
 	if err = r.reconcileRoksMetrics(ctx, hostedControlPlane); err != nil {
 		return fmt.Errorf("failed to reconcile rocks metrics: %w", err)
 	}
