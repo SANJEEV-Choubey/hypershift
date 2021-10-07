@@ -12,9 +12,9 @@ type ROKSMetricParams struct {
 	DeploymentConfig config.DeploymentConfig
 }
 
-func NewROKSMetricsParams(hcp *hyperv1.HostedControlPlane) *ROKSMetricParams {
+func NewROKSMetricsParams(hcp *hyperv1.HostedControlPlane, images map[string]string) *ROKSMetricParams {
 	p := &ROKSMetricParams{
-		Image:    hcp.Spec.ReleaseImage,
+		Image:    images["roks-metrics"],
 		OwnerRef: config.OwnerRefFrom(hcp),
 	}
 	p.DeploymentConfig.Scheduling.PriorityClass = config.DefaultPriorityClass

@@ -2537,8 +2537,8 @@ func generateModularDailyCronSchedule(input []byte) string {
 	return fmt.Sprintf("%d %d * * *", m.Int64(), h.Int64())
 }
 
-func (r *HostedControlPlaneReconciler) reconcileRoksMetrics(ctx context.Context, hcp *hyperv1.HostedControlPlane) error {
-	p := metrics.NewROKSMetricsParams(hcp)
+func (r *HostedControlPlaneReconciler) reconcileRoksMetrics(ctx context.Context, hcp *hyperv1.HostedControlPlane, releaseImage *releaseinfo.ReleaseImage) error {
+	p := metrics.NewROKSMetricsParams(hcp, releaseImage.ComponentImages())
 	controlPlaneNamespace := manifests.RoksMetricsDeployment()
 	if err := r.Client.Get(ctx, client.ObjectKeyFromObject(controlPlaneNamespace), controlPlaneNamespace); err != nil {
 		return fmt.Errorf("failed to get control plane namespace: %w", err)
