@@ -1,7 +1,10 @@
 package metrics
 
 import (
+	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/config"
+	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/manifests"
 	"github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/render"
+	utililty "github.com/openshift/hypershift/control-plane-operator/controllers/hostedcontrolplane/util"
 	"github.com/openshift/hypershift/hypershift-operator/controllers/util"
 	monitoring "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	appsv1 "k8s.io/api/apps/v1"
@@ -18,7 +21,16 @@ var (
 	roksMetricPusherLabels = map[string]string{"app": "push-gateway"}
 )
 
-func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.ServiceAccount, roksMetricsImage string) error {
+func ReconcileRoksMetricsDeployment(cm *corev1.ConfigMap, ownerRef config.OwnerRef, sa *corev1.ServiceAccount, roksMetricsImage string) error {
+	ownerRef.ApplyTo(cm)
+	roksMetricDeployment := manifests.RoksMetricsDeployment()
+	if err := reconcileRoksMetricsDeployment(roksMetricDeployment, sa, roksMetricsImage); err != nil {
+		return err
+	}
+	return utililty.ReconcileWorkerManifest(cm, roksMetricDeployment)
+}
+
+func reconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.ServiceAccount, roksMetricsImage string) error {
 	defaultMode := int32(420)
 	maxSurge := intstr.FromInt(2)
 	maxUnavailable := intstr.FromInt(1)
@@ -101,7 +113,16 @@ func ReconcileRoksMetricsDeployment(deployment *appsv1.Deployment, sa *corev1.Se
 	return nil
 }
 
-func ReconcileRoksMetricsClusterRole(role *rbacv1.ClusterRole) error {
+func ReconcileRoksMetricsClusterRole(cm *corev1.ConfigMap, ownerRef config.OwnerRef) error {
+	ownerRef.ApplyTo(cm)
+	role := manifests.RoksMetricsClusterRole()
+	if err := reconcileRoksMetricsClusterRole(role); err != nil {
+		return err
+	}
+	return utililty.ReconcileWorkerManifest(cm, role)
+}
+
+func reconcileRoksMetricsClusterRole(role *rbacv1.ClusterRole) error {
 	role.Rules = []rbacv1.PolicyRule{
 		{
 			APIGroups: []string{"config.openshift.io"},
@@ -117,7 +138,16 @@ func ReconcileRoksMetricsClusterRole(role *rbacv1.ClusterRole) error {
 	return nil
 }
 
-func ReconcileRoksMetricsRoleBinding(binding *rbacv1.ClusterRoleBinding, role *rbacv1.ClusterRole, sa *corev1.ServiceAccount) error {
+func ReconcileRoksMetricsRoleBinding(cm *corev1.ConfigMap, ownerRef config.OwnerRef, role *rbacv1.ClusterRole, sa *corev1.ServiceAccount) error {
+	ownerRef.ApplyTo(cm)
+	roksMetricRoleBinding := manifests.RoksMetricsRoleBinding()
+	if err := reconcileRoksMetricsRoleBinding(roksMetricRoleBinding, role, sa); err != nil {
+		return err
+	}
+	return utililty.ReconcileWorkerManifest(cm, roksMetricRoleBinding)
+}
+
+func reconcileRoksMetricsRoleBinding(binding *rbacv1.ClusterRoleBinding, role *rbacv1.ClusterRole, sa *corev1.ServiceAccount) error {
 	binding.RoleRef = rbacv1.RoleRef{
 		APIGroup: "rbac.authorization.k8s.io",
 		Kind:     "ClusterRole",
@@ -135,7 +165,16 @@ func ReconcileRoksMetricsRoleBinding(binding *rbacv1.ClusterRoleBinding, role *r
 	return nil
 }
 
-func ReconcileRocksMetricsServiceMonitor(svcMonitor *monitoring.ServiceMonitor) error {
+func ReconcileRocksMetricsServiceMonitor(cm *corev1.ConfigMap, ownerRef config.OwnerRef) error {
+	ownerRef.ApplyTo(cm)
+	roksMetricServiceMonitor := manifests.RoksMetricsServiceMonitor()
+	if err := reconcileRocksMetricsServiceMonitor(roksMetricServiceMonitor); err != nil {
+		return err
+	}
+	return utililty.ReconcileWorkerManifest(cm, roksMetricServiceMonitor)
+}
+
+func reconcileRocksMetricsServiceMonitor(svcMonitor *monitoring.ServiceMonitor) error {
 	svcMonitor.Spec.Selector = metav1.LabelSelector{
 		MatchLabels: map[string]string{
 			"app": "metrics",
@@ -176,7 +215,16 @@ func ReconcileRocksMetricsServiceMonitor(svcMonitor *monitoring.ServiceMonitor) 
 	return nil
 }
 
-func ReconcileRocksMetricsService(svc *corev1.Service) error {
+func ReconcileRocksMetricsService(cm *corev1.ConfigMap, ownerRef config.OwnerRef) error {
+	ownerRef.ApplyTo(cm)
+	roksMetricService := manifests.RoksMetricsService()
+	if err := reconcileRocksMetricsService(roksMetricService); err != nil {
+		return err
+	}
+	return utililty.ReconcileWorkerManifest(cm, roksMetricService)
+}
+
+func reconcileRocksMetricsService(svc *corev1.Service) error {
 	svc.Spec.Selector = map[string]string{
 		"app": "metrics",
 	}
@@ -195,7 +243,16 @@ func ReconcileRocksMetricsService(svc *corev1.Service) error {
 	return nil
 }
 
-func ReconcilePrometheusRoleBinding(binding *rbacv1.RoleBinding) error {
+func ReconcilePrometheusRoleBinding(cm *corev1.ConfigMap, ownerRef config.OwnerRef) error {
+	ownerRef.ApplyTo(cm)
+	roksMetricRoleBinding := manifests.PrometheusK8sRoleBinding()
+	if err := reconcilePrometheusRoleBinding(roksMetricRoleBinding); err != nil {
+		return err
+	}
+	return utililty.ReconcileWorkerManifest(cm, roksMetricRoleBinding)
+}
+
+func reconcilePrometheusRoleBinding(binding *rbacv1.RoleBinding) error {
 	binding.RoleRef = rbacv1.RoleRef{
 		APIGroup: "rbac.authorization.k8s.io",
 		Kind:     "Role",
@@ -213,7 +270,16 @@ func ReconcilePrometheusRoleBinding(binding *rbacv1.RoleBinding) error {
 	return nil
 }
 
-func ReconcileRoksMetricsPusherDeployment(deployment *appsv1.Deployment, sa *corev1.ServiceAccount, roksMetricsImage string) error {
+func ReconcileRoksMetricsPusherDeployment(cm *corev1.ConfigMap, ownerRef config.OwnerRef, sa *corev1.ServiceAccount, roksMetricsImage string) error {
+	ownerRef.ApplyTo(cm)
+	roksMetricPusherDeployment := manifests.MetricPusherDeployment()
+	if err := reconcileRoksMetricsPusherDeployment(roksMetricPusherDeployment, sa, roksMetricsImage); err != nil {
+		return err
+	}
+	return utililty.ReconcileWorkerManifest(cm, roksMetricPusherDeployment)
+}
+
+func reconcileRoksMetricsPusherDeployment(deployment *appsv1.Deployment, sa *corev1.ServiceAccount, roksMetricsImage string) error {
 	defaultMode := int32(420)
 	maxSurge := intstr.FromInt(2)
 	maxUnavailable := intstr.FromInt(1)
@@ -287,7 +353,16 @@ func ReconcileRoksMetricsPusherDeployment(deployment *appsv1.Deployment, sa *cor
 	return nil
 }
 
-func ReconcileRocksMetricsPusherServiceMonitor(svcMonitor *monitoring.ServiceMonitor) error {
+func ReconcileRocksMetricsPusherServiceMonitor(cm *corev1.ConfigMap, ownerRef config.OwnerRef) error {
+	ownerRef.ApplyTo(cm)
+	roksMetricPusherServiceMonitor := manifests.RoksMetricsServiceMonitor()
+	if err := reconcileRocksMetricsPusherServiceMonitor(roksMetricPusherServiceMonitor); err != nil {
+		return err
+	}
+	return utililty.ReconcileWorkerManifest(cm, roksMetricPusherServiceMonitor)
+}
+
+func reconcileRocksMetricsPusherServiceMonitor(svcMonitor *monitoring.ServiceMonitor) error {
 	svcMonitor.Spec.Selector = metav1.LabelSelector{
 		MatchLabels: roksMetricPusherLabels,
 	}
@@ -302,7 +377,16 @@ func ReconcileRocksMetricsPusherServiceMonitor(svcMonitor *monitoring.ServiceMon
 	return nil
 }
 
-func ReconcileRocksMetricsPusherService(svc *corev1.Service) error {
+func ReconcileRocksMetricsPusherService(cm *corev1.ConfigMap, ownerRef config.OwnerRef) error {
+	ownerRef.ApplyTo(cm)
+	roksMetricPusherService := manifests.MetricPusherService()
+	if err := reconcileRocksMetricsPusherService(roksMetricPusherService); err != nil {
+		return err
+	}
+	return utililty.ReconcileWorkerManifest(cm, roksMetricPusherService)
+}
+
+func reconcileRocksMetricsPusherService(svc *corev1.Service) error {
 	svc.Spec.Selector = roksMetricPusherLabels
 	var portSpec corev1.ServicePort
 	if len(svc.Spec.Ports) > 0 {

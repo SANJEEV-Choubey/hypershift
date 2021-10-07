@@ -60,7 +60,7 @@ const (
 	// RoksMetricsImage is an annotation that allows the specification of the roks metrics image.
 	// This is a temporary workaround necessary for compliance reasons on the IBM Cloud side:
 	//no images can be pulled from registries outside of IBM Cloud's official regional registries
-	RoksMetricsImage = "hypershift.openshift.io/roks-metrics-image"
+	RoksMetricsImage = "registry.ci.openshift.org/hypershift-toolkit/ibm-roks-4.6:roks-metrics"
 )
 
 // HostedClusterSpec defines the desired state of HostedCluster
