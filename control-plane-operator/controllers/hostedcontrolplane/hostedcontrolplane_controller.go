@@ -2610,7 +2610,7 @@ func (r *HostedControlPlaneReconciler) reconcileRoksMetrics(ctx context.Context,
 	//reconcile deployment
 	roksMetricsDeployment = manifests.MetricPusherDeploymentWorkerManifest(hcp.Namespace)
 	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, roksMetricsDeployment, func() error {
-		return metrics.ReconcileRoksMetricsPusherDeployment(roksMetricsDeployment, p.OwnerRef, roksMetricserviceAccount, render.NewClusterParams().ROKSMetricsImage)
+		return metrics.ReconcileRoksMetricsPusherDeployment(roksMetricsDeployment, p.OwnerRef, roksMetricserviceAccount, roksMetricsImage)
 	}); err != nil {
 		return fmt.Errorf("failed to reconcile roks metrics pusher deployment: %w", err)
 	}
