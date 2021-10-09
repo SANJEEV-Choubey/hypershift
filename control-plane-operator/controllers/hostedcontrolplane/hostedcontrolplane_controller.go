@@ -76,7 +76,6 @@ const (
 	DefaultAdminKubeconfigName = "admin-kubeconfig"
 	DefaultAdminKubeconfigKey  = "kubeconfig"
 	oauthBrandingManifest      = "v4-0-config-system-branding.yaml"
-	imageRoksMetricsImage      = "registry.ng.bluemix.net/armada-master/ocp-roks-metrics-server:v4.7.0-20210917"
 )
 
 var (
