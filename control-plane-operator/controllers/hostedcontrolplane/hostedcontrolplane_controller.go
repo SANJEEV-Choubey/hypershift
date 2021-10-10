@@ -1268,6 +1268,14 @@ func (r *HostedControlPlaneReconciler) reconcilePKI(ctx context.Context, hcp *hy
 		return fmt.Errorf("failed to reconcile olm operator serving cert: %w", err)
 	}
 
+	//ROKS metrics Cert
+	roksmetricsServingCert := manifests.RoksMetricsWorkerAgentSecret(hcp.Namespace)
+	if _, err := controllerutil.CreateOrUpdate(ctx, r, olmOperatorServingCert, func() error {
+		return pki.ReconcileRoksMetricsSecret(roksmetricsServingCert, rootCASecret, p.OwnerRef)
+	}); err != nil {
+		return fmt.Errorf("failed to reconcile roks metrics serving cert: %w", err)
+	}
+
 	return nil
 }
 
