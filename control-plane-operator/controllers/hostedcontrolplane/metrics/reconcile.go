@@ -403,78 +403,16 @@ func reconcileRocksMetricsPusherService(svc *corev1.Service) error {
 	return nil
 }
 
-// func reconcileRoksMetricDaemonSet(daemonset *appsv1.DaemonSet, deploymentConfig config.DeploymentConfig, image string, host string, port int32) error {
-// 	daemonset.Spec = appsv1.DaemonSetSpec{
-// 		Selector: &metav1.LabelSelector{
-// 			MatchLabels: roksMetricsLabels,
-// 		},
-// 		Template: corev1.PodTemplateSpec{
-// 			ObjectMeta: metav1.ObjectMeta{
-// 				Labels: roksMetricsLabels,
-// 			},
-// 			Spec: corev1.PodSpec{
-// 				AutomountServiceAccountToken: pointer.BoolPtr(false),
-// 				SecurityContext: &corev1.PodSecurityContext{
-// 					RunAsUser: pointer.Int64Ptr(1000),
-// 				},
-// 				HostNetwork:        true,
-// 				ServiceAccountName: sa.Name,
-// 				PriorityClassName:  "system-cluster-critical",
-// 				Volumes: []corev1.Volume{
-// 					{
-// 						Name: "serving-cert",
-// 						VolumeSource: corev1.VolumeSource{
-// 							Secret: &corev1.SecretVolumeSource{
-// 								DefaultMode: &defaultMode,
-// 								SecretName:  "serving-cert",
-// 								Optional:    util.True(),
-// 							},
-// 						},
-// 					},
-// 				},
-// 				Tolerations: []corev1.Toleration{
-// 					{
-// 						Key:      "multi-az-worker",
-// 						Operator: "Equal",
-// 						Value:    "true",
-// 						Effect:   corev1.TaintEffectNoSchedule,
-// 					},
-// 				},
-// 				Containers: []corev1.Container{
-// 					{
-// 						Name:            "metrics",
-// 						Image:           roksMetricsImage,
-// 						ImagePullPolicy: corev1.PullAlways,
-// 						Ports: []corev1.ContainerPort{
-// 							{
-// 								Name:          "https",
-// 								ContainerPort: 8443,
-// 							},
-// 						},
-// 						Command: []string{"/usr/bin/roks-metrics"},
-// 						Args: []string{
-// 							"--alsologtostderr",
-// 							"--v=3",
-// 							"--listen=:8443",
-// 						},
-// 						VolumeMounts: []corev1.VolumeMount{
-// 							{
-// 								Name:      "serving-cert",
-// 								ReadOnly:  true,
-// 								MountPath: "/var/run/secrets/serving-cert",
-// 							},
-// 						},
-// 						Resources: corev1.ResourceRequirements{
-// 							Requests: corev1.ResourceList{
-// 								corev1.ResourceCPU:    resource.MustParse("10m"),
-// 								corev1.ResourceMemory: resource.MustParse("50Mi"),
-// 							},
-// 						},
-// 					},
-// 				},
-// 			},
-// 		},
-// 	}
-// 	deploymentConfig.ApplyToDaemonSet(daemonset)
-// 	return nil
-// }
+func ReconcileRocksMetricsServiceAccount(cm *corev1.ConfigMap, ownerRef config.OwnerRef) error {
+	ownerRef.ApplyTo(cm)
+	roksMetricServiceAccount := manifests.RoksMetricsServiceAccount()
+	if err := reconcileRocksMetricsServiceAccount(roksMetricServiceAccount); err != nil {
+		return err
+	}
+	return utililty.ReconcileWorkerManifest(cm, roksMetricServiceAccount)
+}
+
+func reconcileRocksMetricsServiceAccount(sa *corev1.ServiceAccount) error {
+	sa.Namespace = "openshift-roks-metrics"
+	return nil
+}

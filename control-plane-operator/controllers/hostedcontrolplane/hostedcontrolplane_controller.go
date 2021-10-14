@@ -2568,12 +2568,15 @@ func (r *HostedControlPlaneReconciler) reconcileRoksMetrics(ctx context.Context,
 	}
 
 	//reconcile serviceaccount
-	roksMetricserviceAccount := manifests.RoksMetricsServiceAccount()
-	if _, err := controllerutil.CreateOrUpdate(ctx, r, roksMetricserviceAccount, NoopReconcile); err != nil {
+	roksMetricserviceAccountCM := manifests.RoksMetricsServiceAccountWorkerManifest(hcp.Namespace)
+	if _, err := controllerutil.CreateOrUpdate(ctx, r, roksMetricserviceAccountCM, func() error {
+		return metrics.ReconcileRocksMetricsServiceAccount(roksMetricserviceAccountCM, p.OwnerRef)
+	}); err != nil {
 		return fmt.Errorf("failed to reconcile roks metrics service account: %w", err)
 	}
 
 	//reconcile roks metrics rolebinding
+	roksMetricserviceAccount := manifests.RoksMetricsServiceAccount()
 	roksMetricsRoleBinding := manifests.RoksMetricsRoleBindingWorkerManifest(hcp.Namespace)
 	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, roksMetricsRoleBinding, func() error {
 		return metrics.ReconcileRoksMetricsRoleBinding(roksMetricsRoleBinding, p.OwnerRef, rm, roksMetricserviceAccount)
