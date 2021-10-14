@@ -86,9 +86,6 @@ var (
 	)
 )
 
-// NoopReconcile is just a default mutation function that does nothing.
-var NoopReconcile controllerutil.MutateFn = func() error { return nil }
-
 type InfrastructureStatus struct {
 	APIHost                 string
 	APIPort                 int32
