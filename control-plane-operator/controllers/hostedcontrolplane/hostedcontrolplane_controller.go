@@ -7,14 +7,13 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
-
-	"github.com/openshift/api/operator/v1alpha1"
-	"sigs.k8s.io/cluster-api/util/annotations"
-
 	"math/big"
 	"math/rand"
 	"net/url"
 	"time"
+
+	"github.com/openshift/api/operator/v1alpha1"
+	"sigs.k8s.io/cluster-api/util/annotations"
 
 	"github.com/go-logr/logr"
 	configv1 "github.com/openshift/api/config/v1"
@@ -1578,7 +1577,7 @@ func (r *HostedControlPlaneReconciler) reconcileKubeAPIServer(ctx context.Contex
 	}
 
 	kubeAPIServerDeployment := manifests.KASDeployment(hcp.Namespace)
-	if _, err := controllerutil.CreateOrUpdate(ctx, r, kubeAPIServerDeployment, func() error {
+	if result, err := controllerutil.CreateOrUpdate(ctx, r, kubeAPIServerDeployment, func() error {
 		return kas.ReconcileKubeAPIServerDeployment(kubeAPIServerDeployment,
 			p.OwnerRef,
 			p.DeploymentConfig,
@@ -1593,6 +1592,8 @@ func (r *HostedControlPlaneReconciler) reconcileKubeAPIServer(ctx context.Contex
 		)
 	}); err != nil {
 		return fmt.Errorf("failed to reconcile api server deployment: %w", err)
+	} else {
+		r.Log.Info("updated kube apiserver deployment", "result", result)
 	}
 	return nil
 }
