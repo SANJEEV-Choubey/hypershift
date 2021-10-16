@@ -1,6 +1,7 @@
 package util
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io/ioutil"
@@ -26,6 +27,7 @@ import (
 	cmdcluster "github.com/openshift/hypershift/cmd/cluster"
 	consolelogsaws "github.com/openshift/hypershift/cmd/consolelogs/aws"
 	"github.com/openshift/hypershift/hypershift-operator/controllers/manifests"
+	"github.com/openshift/hypershift/support/upsert"
 )
 
 func GenerateNamespace(t *testing.T, ctx context.Context, client crclient.Client, prefix string) *corev1.Namespace {
@@ -52,10 +54,16 @@ func DumpHostedCluster(t *testing.T, ctx context.Context, hostedCluster *hyperv1
 		t.Logf("Skipping cluster dump because no artifact dir was provided")
 		return
 	}
+	findKubeObjectUpdateLoops := func(filename string, content []byte) {
+		if bytes.Contains(content, []byte(upsert.LoopDetectorWarningMessage)) {
+			t.Errorf("Found %s messages in file %s", upsert.LoopDetectorWarningMessage, filename)
+		}
+	}
 	err := cmdcluster.DumpCluster(ctx, &cmdcluster.DumpOptions{
 		Namespace:   hostedCluster.Namespace,
 		Name:        hostedCluster.Name,
 		ArtifactDir: artifactDir,
+		LogCheckers: []cmdcluster.LogChecker{findKubeObjectUpdateLoops},
 	})
 	if err != nil {
 		t.Errorf("Failed to dump cluster: %v", err)
@@ -349,6 +357,29 @@ func EnsureNoCrashingPods(t *testing.T, ctx context.Context, client crclient.Cli
 					t.Errorf("Container %s in pod %s has a restartCount > 0 (%d)", containerStatus.Name, pod.Name, containerStatus.RestartCount)
 				}
 			}
+		}
+	})
+}
+
+func EnsureNodeCountMatchesNodePoolReplicas(t *testing.T, ctx context.Context, hostClient, guestClient crclient.Client, nodePoolName crclient.ObjectKey) {
+	t.Run("EnsureNodeCountMatchesNodePoolReplicas", func(t *testing.T) {
+		var nodepool hyperv1.NodePool
+		if err := hostClient.Get(ctx, nodePoolName, &nodepool); err != nil {
+			t.Fatalf("failed to get nodepool: %v", err)
+		}
+
+		var nodes corev1.NodeList
+		if err := guestClient.List(ctx, &nodes); err != nil {
+			t.Fatalf("failed to list nodes in guest cluster: %v", err)
+		}
+
+		var nodeCount int
+		if nodepool.Spec.NodeCount != nil {
+			nodeCount = int(*nodepool.Spec.NodeCount)
+		}
+
+		if nodeCount != len(nodes.Items) {
+			t.Errorf("nodepool replicas %d does not match number of nodes in cluster %d", nodeCount, len(nodes.Items))
 		}
 	})
 }

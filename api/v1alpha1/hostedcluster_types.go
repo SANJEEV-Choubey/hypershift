@@ -65,6 +65,12 @@ const (
 	// This is a temporary workaround necessary for compliance reasons on the IBM Cloud side:
 	//no images can be pulled from registries outside of IBM Cloud's official regional registries
 	RoksMetricsImage = "registry.ng.bluemix.net/armada-master/ocp-roks-metrics-server:v4.7.0-20210917"
+	// OperatorComponent identifies a component as belonging to the operator.
+	OperatorComponent = "hypershift.openshift.io/operator-component"
+	// MachineApproverImage is an annotation that allows the specification of the machine approver image.
+	// This is a temporary workaround necessary for compliance reasons on the IBM Cloud side:
+	// no images can be pulled from registries outside of IBM Cloud's official regional registries
+	MachineApproverImage = "hypershift.openshift.io/machine-approver-image"
 )
 
 // HostedClusterSpec defines the desired state of HostedCluster
