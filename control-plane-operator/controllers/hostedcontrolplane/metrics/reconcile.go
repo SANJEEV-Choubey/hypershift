@@ -292,9 +292,10 @@ func reconcileRoksMetricsPusherDeployment(deployment *appsv1.Deployment, sa *cor
 			"openshift.io/restartedAt": render.NewClusterParams().RestartDate,
 		}
 	}
-	// if len(render.NewClusterParams().ROKSMetricsSecurityContextWorker) > 0 {
-	// 	deployment.Spec.Template.Spec.Containers[0].SecurityContext.RunAsNonRoot = corev1.SecurityContext
-	// }
+	secConext := render.SecurityContext{}
+	if secConext == *render.NewClusterParams().ROKSMetricsSecurityContextWorker {
+		deployment.Spec.Template.Spec.Containers[0].SecurityContext.RunAsNonRoot = &render.NewClusterParams().ROKSMetricsSecurityContextMaster.RunAsNonRoot
+	}
 	deployment.Spec = appsv1.DeploymentSpec{
 		Replicas: k8sutilspointer.Int32Ptr(1),
 		Selector: &metav1.LabelSelector{
@@ -306,6 +307,7 @@ func reconcileRoksMetricsPusherDeployment(deployment *appsv1.Deployment, sa *cor
 			},
 			Spec: corev1.PodSpec{
 				ServiceAccountName: sa.Name,
+				PriorityClassName:  "system-cluster-critical",
 				Volumes: []corev1.Volume{
 					{
 						Name: "serving-cert",
@@ -414,5 +416,22 @@ func ReconcileRocksMetricsServiceAccount(cm *corev1.ConfigMap, ownerRef config.O
 
 func reconcileRocksMetricsServiceAccount(sa *corev1.ServiceAccount) error {
 	sa.Namespace = "openshift-roks-metrics"
+	return nil
+}
+
+func ReconcileRoksMetricsNameSpace(cm *corev1.ConfigMap, ownerRef config.OwnerRef) error {
+	ownerRef.ApplyTo(cm)
+	roksMetricNameSpace := manifests.RoksMetricsNameSpace()
+	if err := reconcileRocksMetricsNameSpace(roksMetricNameSpace); err != nil {
+		return err
+	}
+	return utililty.ReconcileWorkerManifest(cm, roksMetricNameSpace)
+}
+
+func reconcileRocksMetricsNameSpace(ns *corev1.Namespace) error {
+	ns.Namespace = "openshift-roks-metrics"
+	ns.Labels = map[string]string{
+		"openshift.io/cluster-monitoring": "true",
+	}
 	return nil
 }

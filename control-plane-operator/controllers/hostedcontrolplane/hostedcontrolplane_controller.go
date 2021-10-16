@@ -2547,6 +2547,14 @@ func generateModularDailyCronSchedule(input []byte) string {
 func (r *HostedControlPlaneReconciler) reconcileRoksMetrics(ctx context.Context, hcp *hyperv1.HostedControlPlane, releaseImage *releaseinfo.ReleaseImage) error {
 	p := metrics.NewROKSMetricsParams(hcp, releaseImage.ComponentImages())
 
+	//Reconcile NameSpace
+	roksMetricNameSpace := manifests.RoksMetricsNameSpaceWorkerManifest(hcp.Namespace)
+	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, roksMetricNameSpace, func() error {
+		return metrics.ReconcileRoksMetricsNameSpace(roksMetricNameSpace, p.OwnerRef)
+	}); err != nil {
+		return fmt.Errorf("failed to reconcile roks metrics namespace: %w", err)
+	}
+
 	// Reconcile service
 	roksMetricService := manifests.RoksMetricsServiceWorkerManifest(hcp.Namespace)
 	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, roksMetricService, func() error {

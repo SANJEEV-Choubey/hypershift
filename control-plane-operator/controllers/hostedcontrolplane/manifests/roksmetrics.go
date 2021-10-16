@@ -9,6 +9,22 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+func RoksMetricsNameSpace() *corev1.Namespace {
+	return &corev1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "openshift-roks-metrics",
+		},
+	}
+}
+
+func RoksMetricsNameSpaceWorkerManifest(namespace string) *corev1.ConfigMap {
+	return &corev1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "user-manifest-roks-metrics-namespace",
+		},
+	}
+}
+
 func RoksMetricsRoute() *routev1.Route {
 	return &routev1.Route{
 		ObjectMeta: metav1.ObjectMeta{
