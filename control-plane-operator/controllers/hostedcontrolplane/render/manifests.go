@@ -63,7 +63,6 @@ func (c *clusterManifestContext) setupManifests() {
 	c.userManifestsBootstrapper()
 	c.machineConfigServer()
 	c.ignitionConfigs()
-
 }
 
 func (c *clusterManifestContext) registry() {

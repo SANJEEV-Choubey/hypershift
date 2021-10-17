@@ -292,10 +292,6 @@ func reconcileRoksMetricsPusherDeployment(deployment *appsv1.Deployment, sa *cor
 			"openshift.io/restartedAt": render.NewClusterParams().RestartDate,
 		}
 	}
-	secConext := render.SecurityContext{}
-	if secConext == *render.NewClusterParams().ROKSMetricsSecurityContextWorker {
-		deployment.Spec.Template.Spec.Containers[0].SecurityContext.RunAsNonRoot = &render.NewClusterParams().ROKSMetricsSecurityContextMaster.RunAsNonRoot
-	}
 	deployment.Spec = appsv1.DeploymentSpec{
 		Replicas: k8sutilspointer.Int32Ptr(1),
 		Selector: &metav1.LabelSelector{
