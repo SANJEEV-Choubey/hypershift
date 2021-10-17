@@ -8,7 +8,7 @@ import (
 )
 
 func ReconcileRoksMetricsCertSecret(secret, ca *corev1.Secret, ownerRef config.OwnerRef) error {
-	return reconcileSignedCert(secret, ca, ownerRef, "roks-metrics", "openshift", X509DefaultUsage, X509UsageClientAuth)
+	return reconcileSignedCert(secret, ca, ownerRef, "roks-metrics", []string{"openshift"}, X509DefaultUsage, X509UsageClientAuth)
 }
 
 func ReconcileRoksMetricsSecret(cm *corev1.ConfigMap, ca *corev1.Secret, ownerRef config.OwnerRef) error {
