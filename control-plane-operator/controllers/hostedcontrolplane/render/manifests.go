@@ -17,7 +17,6 @@ func RenderClusterManifests(params *ClusterParams, image *releaseinfo.ReleaseIma
 	if err != nil {
 		return nil, err
 	}
-
 	ctx := newClusterManifestContext(image.ComponentImages(), componentVersions, params, pullSecret, secrets, configMaps)
 	ctx.setupManifests()
 	return ctx.renderManifests()
