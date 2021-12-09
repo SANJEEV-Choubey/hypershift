@@ -142,6 +142,7 @@ type HostedClusterReconciler struct {
 
 	OIDCStorageProviderS3BucketName string
 	S3Client                        s3iface.S3API
+	ExposeKubeAdminPassword         bool
 }
 
 // +kubebuilder:rbac:groups=hypershift.openshift.io,resources=hostedclusters,verbs=get;list;watch;create;update;patch;delete

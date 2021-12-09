@@ -99,6 +99,7 @@ type HyperShiftOperatorDeployment struct {
 	AWSPrivateRegion                string
 	OIDCStorageProviderS3BucketName string
 	OIDCStorageProviderS3Region     string
+	ExposeKubeAdminPassword         bool
 }
 
 func (o HyperShiftOperatorDeployment) Build() *appsv1.Deployment {
@@ -110,6 +111,7 @@ func (o HyperShiftOperatorDeployment) Build() *appsv1.Deployment {
 		fmt.Sprintf("--enable-ocp-cluster-monitoring=%t", o.EnableOCPClusterMonitoring),
 		fmt.Sprintf("--enable-ci-debug-output=%t", o.EnableCIDebugOutput),
 		fmt.Sprintf("--private-platform=%s", o.PrivatePlatform),
+		fmt.Sprintf("--private-platform=%v", o.ExposeKubeAdminPassword),
 	}
 	var oidcVolumeMount []corev1.VolumeMount
 	var oidcVolumeCred []corev1.Volume
