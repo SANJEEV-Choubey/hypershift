@@ -111,7 +111,7 @@ func (o HyperShiftOperatorDeployment) Build() *appsv1.Deployment {
 		fmt.Sprintf("--enable-ocp-cluster-monitoring=%t", o.EnableOCPClusterMonitoring),
 		fmt.Sprintf("--enable-ci-debug-output=%t", o.EnableCIDebugOutput),
 		fmt.Sprintf("--private-platform=%s", o.PrivatePlatform),
-		fmt.Sprintf("--private-platform=%v", o.ExposeKubeAdminPassword),
+		fmt.Sprintf("--expose-kube-admin-pwd=%v", o.ExposeKubeAdminPassword),
 	}
 	var oidcVolumeMount []corev1.VolumeMount
 	var oidcVolumeCred []corev1.Volume
