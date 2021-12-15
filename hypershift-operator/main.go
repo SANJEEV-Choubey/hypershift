@@ -86,6 +86,7 @@ type StartOptions struct {
 	OIDCStorageProviderS3BucketName  string
 	OIDCStorageProviderS3Region      string
 	OIDCStorageProviderS3Credentials string
+	ExposeKubeAdminPassword          bool
 }
 
 func NewStartCommand() *cobra.Command {
@@ -110,6 +111,7 @@ func NewStartCommand() *cobra.Command {
 		PrivatePlatform:                  string(hyperv1.NonePlatform),
 		OIDCStorageProviderS3Region:      "us-east-1",
 		OIDCStorageProviderS3Credentials: "/etc/oidc-storage-provider-s3-creds/credentials",
+		ExposeKubeAdminPassword:          false,
 	}
 
 	cmd.Flags().StringVar(&opts.Namespace, "namespace", opts.Namespace, "The namespace this operator lives in")
@@ -129,6 +131,7 @@ func NewStartCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.OIDCStorageProviderS3BucketName, "oidc-storage-provider-s3-bucket-name", "", "Name of the bucket in which to store the clusters OIDC discovery information. Required for AWS guest clusters")
 	cmd.Flags().StringVar(&opts.OIDCStorageProviderS3Region, "oidc-storage-provider-s3-region", opts.OIDCStorageProviderS3Region, "Region in which the OIDC bucket is located. Required for AWS guest clusters")
 	cmd.Flags().StringVar(&opts.OIDCStorageProviderS3Credentials, "oidc-storage-provider-s3-credentials", opts.OIDCStorageProviderS3Credentials, "Location of the credentials file for the OIDC bucket. Required for AWS guest clusters.")
+	cmd.Flags().BoolVar(&opts.ExposeKubeAdminPassword, "expose-kube-admin-pwd", false, "Expose kubeadmin password in HostedCluster status")
 
 	cmd.Run = func(cmd *cobra.Command, args []string) {
 		ctx, cancel := context.WithCancel(ctrl.SetupSignalHandler())

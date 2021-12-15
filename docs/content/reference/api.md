@@ -351,6 +351,19 @@ control plane.</p>
 </tr>
 <tr>
 <td>
+<code>exposeKubeadminPassword</code></br>
+<em>
+bool
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>ExposeKubeadminPassword specifies whether to expose the kubeadmin password
+for the guest cluster.</p>
+</td>
+</tr>
+<tr>
+<td>
 <code>fips</code></br>
 <em>
 bool
@@ -2248,6 +2261,19 @@ control plane.</p>
 </tr>
 <tr>
 <td>
+<code>exposeKubeadminPassword</code></br>
+<em>
+bool
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>ExposeKubeadminPassword specifies whether to expose the kubeadmin password
+for the guest cluster.</p>
+</td>
+</tr>
+<tr>
+<td>
 <code>fips</code></br>
 <em>
 bool
@@ -2670,6 +2696,19 @@ SecretEncryptionSpec
 <em>(Optional)</em>
 <p>SecretEncryption contains metadata about the kubernetes secret encryption strategy being used for the
 cluster when applicable.</p>
+</td>
+</tr>
+<tr>
+<td>
+<code>exposeKubeadminPassword</code></br>
+<em>
+bool
+</em>
+</td>
+<td>
+<em>(Optional)</em>
+<p>ExposeKubeadminPassword specifies whether to expose the kubeadmin password
+for the guest cluster.</p>
 </td>
 </tr>
 </tbody>

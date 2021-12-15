@@ -267,6 +267,10 @@ spec:
                 required:
                 - managementType
                 type: object
+              exposeKubeadminPassword:
+                description: ExposeKubeadminPassword specifies whether to expose the
+                  kubeadmin password for the guest cluster.
+                type: boolean
               fips:
                 description: FIPS indicates whether this cluster's nodes will be running
                   in FIPS mode. If set to true, the control plane's ignition server

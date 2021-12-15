@@ -57,6 +57,7 @@ type CreateOptions struct {
 	AWSPlatform                      AWSPlatformOptions
 	AgentPlatform                    AgentPlatformCreateOptions
 	Wait                             bool
+	ExposeKubeAdminPassword          bool
 }
 
 type AgentPlatformCreateOptions struct {

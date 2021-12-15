@@ -247,7 +247,7 @@ func (r *HostedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
 
 	// Set kubeadminPassword status
-	{
+	if hcluster.Spec.ExposeKubeadminPassword {
 		kubeadminPasswordSecret := manifests.KubeadminPasswordSecret(hcluster.Namespace, hcluster.Name)
 		err := r.Client.Get(ctx, client.ObjectKeyFromObject(kubeadminPasswordSecret), kubeadminPasswordSecret)
 		if err != nil {
@@ -861,7 +861,7 @@ func (r *HostedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
 
 	// Reconcile the HostedControlPlane kubeadminPassword
-	if hcp.Status.KubeadminPassword != nil {
+	if hcp.Spec.ExposeKubeadminPassword && hcp.Status.KubeadminPassword != nil {
 		src := &corev1.Secret{
 			ObjectMeta: metav1.ObjectMeta{
 				Namespace: hcp.Namespace,

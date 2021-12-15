@@ -95,6 +95,11 @@ type HostedControlPlaneSpec struct {
 	// cluster when applicable.
 	// +optional
 	SecretEncryption *SecretEncryptionSpec `json:"secretEncryption,omitempty"`
+
+	// ExposeKubeadminPassword specifies whether to expose the kubeadmin password
+	// for the guest cluster.
+	// +optional
+	ExposeKubeadminPassword bool `json:"exposeKubeadminPassword,omitempty"`
 }
 
 // AvailabilityPolicy specifies a high level availability policy for components.

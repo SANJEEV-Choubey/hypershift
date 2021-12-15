@@ -198,6 +198,11 @@ type HostedClusterSpec struct {
 	// +optional
 	SecretEncryption *SecretEncryptionSpec `json:"secretEncryption,omitempty"`
 
+	// ExposeKubeadminPassword specifies whether to expose the kubeadmin password
+	// for the guest cluster.
+	// +optional
+	ExposeKubeadminPassword bool `json:"exposeKubeadminPassword,omitempty"`
+
 	// FIPS indicates whether this cluster's nodes will be running in FIPS mode.
 	// If set to true, the control plane's ignition server will be configured to
 	// expect that nodes joining the cluster will be FIPS-enabled.
