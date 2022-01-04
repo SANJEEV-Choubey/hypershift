@@ -96,7 +96,6 @@ func NewCommand() *cobra.Command {
 	cmd.Flags().StringVar(&opts.OIDCStorageProviderS3Credentials, "oidc-storage-provider-s3-credentials", opts.OIDCStorageProviderS3Credentials, "Credentials to use for writing the OIDC documents into the S3 bucket. Required for AWS guest clusters")
 	cmd.Flags().StringVar(&opts.OIDCStorageProviderS3Region, "oidc-storage-provider-s3-region", "", "Region of the OIDC bucket. Required for AWS guest clusters")
 	cmd.Flags().StringVar(&opts.OIDCStorageProviderS3BucketName, "oidc-storage-provider-s3-bucket-name", "", "Name of the bucket in which to store the clusters OIDC discovery information. Required for AWS guest clusters")
-	cmd.Flags().BoolVar(&opts.ExposeKubeAdminPassword, "expose-kube-admin-pwd", false, "Expose kubeadmin password in HostedCluster status")
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		if err := opts.Validate(); err != nil {
@@ -224,7 +223,6 @@ func hyperShiftOperatorManifests(opts Options) ([]crclient.Object, error) {
 		AWSPrivateCreds:                 opts.AWSPrivateCreds,
 		OIDCStorageProviderS3BucketName: opts.OIDCStorageProviderS3BucketName,
 		OIDCStorageProviderS3Region:     opts.OIDCStorageProviderS3Region,
-		ExposeKubeAdminPassword:         opts.ExposeKubeAdminPassword,
 	}.Build()
 	operatorService := assets.HyperShiftOperatorService{
 		Namespace: operatorNamespace,
