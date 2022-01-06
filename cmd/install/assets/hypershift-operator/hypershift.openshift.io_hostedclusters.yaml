@@ -157,6 +157,11 @@ spec:
                   policy applied to critical control plane components. The default
                   value is SingleReplica.
                 type: string
+              createGuestClusterAdminUser:
+                description: CreateGusetClusterAdminUser specifies whether to create
+                  admin user for the guest cluster. If set to true, Admin user will
+                  be able to access guest cluster
+                type: boolean
               dns:
                 description: DNS specifies DNS configuration for the cluster.
                 properties:
@@ -267,10 +272,6 @@ spec:
                 required:
                 - managementType
                 type: object
-              exposeKubeadminPassword:
-                description: ExposeKubeadminPassword specifies whether to expose the
-                  kubeadmin password for the guest cluster.
-                type: boolean
               fips:
                 description: FIPS indicates whether this cluster's nodes will be running
                   in FIPS mode. If set to true, the control plane's ignition server

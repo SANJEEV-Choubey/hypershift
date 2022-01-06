@@ -26,7 +26,7 @@ func NewCreateCommands() *cobra.Command {
 		ServiceCIDR:                    "172.31.0.0/16",
 		PodCIDR:                        "10.132.0.0/14",
 		Wait:                           false,
-		ExposeKubeAdminPassword:        false,
+		CreateGusetClusterAdminUser:    false,
 	}
 	cmd := &cobra.Command{
 		Use:          "cluster",
@@ -55,7 +55,7 @@ func NewCreateCommands() *cobra.Command {
 	cmd.PersistentFlags().StringVar(&opts.ServiceCIDR, "service-cidr", opts.ServiceCIDR, "The CIDR of the service network")
 	cmd.PersistentFlags().StringVar(&opts.PodCIDR, "pod-cidr", opts.PodCIDR, "The CIDR of the pod network")
 	cmd.PersistentFlags().BoolVar(&opts.Wait, "wait", opts.Wait, "If the create command should block until the cluster is up. Requires at least one node.")
-	cmd.Flags().BoolVar(&opts.ExposeKubeAdminPassword, "expose-kube-admin-pwd", opts.ExposeKubeAdminPassword, "Expose kubeadmin password in HostedCluster status")
+	cmd.Flags().BoolVar(&opts.CreateGusetClusterAdminUser, "create-guest-cluster-admin-user", opts.CreateGusetClusterAdminUser, "Specifies whether to create admin user for the guest cluster.If set to true, Admin user will be able to access guest cluster")
 
 	cmd.MarkPersistentFlagRequired("pull-secret")
 

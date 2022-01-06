@@ -74,7 +74,7 @@ type ExampleOptions struct {
 	NetworkType                      hyperv1.NetworkType
 	ControlPlaneAvailabilityPolicy   hyperv1.AvailabilityPolicy
 	InfrastructureAvailabilityPolicy hyperv1.AvailabilityPolicy
-	ExposeKubeAdminPassword          bool
+	CreateGusetClusterAdminUser      *bool
 }
 
 type ExampleNoneOptions struct {
@@ -308,7 +308,7 @@ web_identity_token_file = /var/run/secrets/openshift/serviceaccount/token
 			ControllerAvailabilityPolicy:     o.ControlPlaneAvailabilityPolicy,
 			InfrastructureAvailabilityPolicy: o.InfrastructureAvailabilityPolicy,
 			Platform:                         platformSpec,
-			ExposeKubeadminPassword:          o.ExposeKubeAdminPassword,
+			CreateGusetClusterAdminUser:      o.CreateGusetClusterAdminUser,
 		},
 	}
 

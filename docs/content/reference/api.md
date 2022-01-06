@@ -351,15 +351,15 @@ control plane.</p>
 </tr>
 <tr>
 <td>
-<code>exposeKubeadminPassword</code></br>
+<code>createGuestClusterAdminUser</code></br>
 <em>
 bool
 </em>
 </td>
 <td>
 <em>(Optional)</em>
-<p>ExposeKubeadminPassword specifies whether to expose the kubeadmin password
-for the guest cluster.</p>
+<p>CreateGusetClusterAdminUser specifies whether to create admin user for the guest cluster.
+If set to true, Admin user will be able to access guest cluster</p>
 </td>
 </tr>
 <tr>
@@ -2261,15 +2261,15 @@ control plane.</p>
 </tr>
 <tr>
 <td>
-<code>exposeKubeadminPassword</code></br>
+<code>createGuestClusterAdminUser</code></br>
 <em>
 bool
 </em>
 </td>
 <td>
 <em>(Optional)</em>
-<p>ExposeKubeadminPassword specifies whether to expose the kubeadmin password
-for the guest cluster.</p>
+<p>CreateGusetClusterAdminUser specifies whether to create admin user for the guest cluster.
+If set to true, Admin user will be able to access guest cluster</p>
 </td>
 </tr>
 <tr>
@@ -2700,15 +2700,15 @@ cluster when applicable.</p>
 </tr>
 <tr>
 <td>
-<code>exposeKubeadminPassword</code></br>
+<code>createGuestClusterAdminUser</code></br>
 <em>
 bool
 </em>
 </td>
 <td>
 <em>(Optional)</em>
-<p>ExposeKubeadminPassword specifies whether to expose the kubeadmin password
-for the guest cluster.</p>
+<p>CreateGusetClusterAdminUser specifies whether to create admin user for the guest cluster.
+If set to true, Admin user will be able to access guest cluster</p>
 </td>
 </tr>
 </tbody>

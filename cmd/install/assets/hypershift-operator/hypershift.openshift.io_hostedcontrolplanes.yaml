@@ -109,6 +109,11 @@ spec:
                   control plane controllers in HA mode Defaults to SingleReplica when
                   not set
                 type: string
+              createGuestClusterAdminUser:
+                description: CreateGusetClusterAdminUser specifies whether to create
+                  admin user for the guest cluster. If set to true, Admin user will
+                  be able to access guest cluster
+                type: boolean
               dns:
                 description: DNSSpec specifies the DNS configuration in the cluster.
                 properties:
@@ -216,10 +221,6 @@ spec:
                 required:
                 - managementType
                 type: object
-              exposeKubeadminPassword:
-                description: ExposeKubeadminPassword specifies whether to expose the
-                  kubeadmin password for the guest cluster.
-                type: boolean
               fips:
                 description: FIPS specifies if the nodes for the cluster will be running
                   in FIPS mode
