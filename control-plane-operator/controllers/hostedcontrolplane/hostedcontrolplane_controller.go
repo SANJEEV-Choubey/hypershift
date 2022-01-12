@@ -635,8 +635,8 @@ func (r *HostedControlPlaneReconciler) update(ctx context.Context, hostedControl
 	if err = r.reconcileMachineConfigServerConfig(ctx, hostedControlPlane, globalConfig); err != nil {
 		return fmt.Errorf("failed to reconcile mcs config: %w", err)
 	}
-	r.Log.Info(fmt.Sprintf("Global config before %v", globalConfig.OAuth))
-	globalConfig.OAuth = nil
+	// r.Log.Info(fmt.Sprintf("Global config before %v", globalConfig.OAuth))
+	// globalConfig.OAuth = nil
 	r.Log.Info(fmt.Sprintf("Global config after %v", globalConfig.OAuth))
 
 	// Reconcile kubeadmin password
