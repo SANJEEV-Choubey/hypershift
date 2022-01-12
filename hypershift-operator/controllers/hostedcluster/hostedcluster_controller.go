@@ -29,7 +29,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3iface"
-	"github.com/blang/semver"
 	"github.com/go-logr/logr"
 	configv1 "github.com/openshift/api/config/v1"
 	routev1 "github.com/openshift/api/route/v1"
@@ -1777,27 +1776,28 @@ func (r *HostedClusterReconciler) reconcileAutoscaler(ctx context.Context, creat
 }
 
 func getControlPlaneOperatorImage(ctx context.Context, hc *hyperv1.HostedCluster, releaseProvider releaseinfo.Provider, hypershiftOperatorImage string, pullSecret []byte) (string, error) {
-	if val, ok := hc.Annotations[hyperv1.ControlPlaneOperatorImageAnnotation]; ok {
-		return val, nil
-	}
-	releaseInfo, err := releaseProvider.Lookup(ctx, hc.Spec.Release.Image, pullSecret)
-	if err != nil {
-		return "", err
-	}
-	version, err := semver.Parse(releaseInfo.Version())
-	if err != nil {
-		return "", err
-	}
-	versionMajMin := fmt.Sprintf("%d.%d", version.Major, version.Minor)
-	pullSpec := "registry.ci.openshift.org/hypershift/hypershift"
-	switch versionMajMin {
-	case "4.9", "4.10":
-		return hypershiftOperatorImage, nil
-	case "4.8":
-		return fmt.Sprintf("%s:%s", pullSpec, versionMajMin), nil
-	default:
-		return "", fmt.Errorf("unsupported release image with version %s", versionMajMin)
-	}
+	return hypershiftOperatorImage, nil
+	// if val, ok := hc.Annotations[hyperv1.ControlPlaneOperatorImageAnnotation]; ok {
+	// 	return val, nil
+	// }
+	// releaseInfo, err := releaseProvider.Lookup(ctx, hc.Spec.Release.Image, pullSecret)
+	// if err != nil {
+	// 	return "", err
+	// }
+	// version, err := semver.Parse(releaseInfo.Version())
+	// if err != nil {
+	// 	return "", err
+	// }
+	// versionMajMin := fmt.Sprintf("%d.%d", version.Major, version.Minor)
+	// pullSpec := "registry.ci.openshift.org/hypershift/hypershift"
+	// switch versionMajMin {
+	// case "4.9", "4.10":
+	// 	return hypershiftOperatorImage, nil
+	// case "4.8":
+	// 	return fmt.Sprintf("%s:%s", pullSpec, versionMajMin), nil
+	// default:
+	// 	return "", fmt.Errorf("unsupported release image with version %s", versionMajMin)
+	// }
 }
 
 func reconcileControlPlaneOperatorDeployment(deployment *appsv1.Deployment, hc *hyperv1.HostedCluster, image string, sa *corev1.ServiceAccount, enableCIDebugOutput bool, registryOverrideCommandLine string) error {
