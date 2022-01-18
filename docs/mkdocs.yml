@@ -2,47 +2,48 @@ site_name: HyperShift
 theme:
   name: material
   features:
-  - navigation.tabs
-  - navigation.indexes
-  - content.code.annotate
+    - navigation.tabs
+    - navigation.indexes
+    - content.code.annotate
 plugins:
-- search
-- mermaid2
+  - search
+  - mermaid2
 docs_dir: content
 repo_url: https://github.com/openshift/hypershift
 edit_uri: edit/main/docs/content
 repo_name: openshift/hypershift
 markdown_extensions:
-- toc:
-    toc_depth: "2-2"
-- attr_list:
-- pymdownx.highlight
-- pymdownx.inlinehilite
-- pymdownx.superfences:
-    # make exceptions to highlighting of code:
-    custom_fences:
-    - name: mermaid
-      class: mermaid
-      format: !!python/name:mermaid2.fence_mermaid
-- pymdownx.snippets
-- admonition
-- pymdownx.details
-- pymdownx.tabbed:
-    alternate_style: true
+  - toc:
+      toc_depth: "2-2"
+  - attr_list:
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      # make exceptions to highlighting of code:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
 nav:
-- Home: index.md
-- 'Getting started': getting-started.md
-- 'How-to guides':
-  - how-to/index.md
-  - how-to/deploy-aws-private-clusters.md
-- 'Reference':
-  - reference/index.md
-  - reference/api.md
-  - reference/concepts.md
-  - reference/controller-architecture.md
-- 'Contribute':
-  - contribute/index.md
-  - contribute/develop-in-cluster.md
-  - contribute/onboard-a-platform.md
-  - contribute/run-tests.md
-  - contribute/contribute-docs.md
+  - Home: index.md
+  - "Getting started": getting-started.md
+  - "How-to guides":
+      - how-to/index.md
+      - how-to/deploy-aws-private-clusters.md
+      - how-to/oauth.md
+      - "Reference":
+          - reference/index.md
+          - reference/api.md
+          - reference/concepts.md
+          - reference/controller-architecture.md
+      - "Contribute":
+          - contribute/index.md
+          - contribute/develop-in-cluster.md
+          - contribute/onboard-a-platform.md
+          - contribute/run-tests.md
+          - contribute/contribute-docs.md
